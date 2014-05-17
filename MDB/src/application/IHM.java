@@ -47,6 +47,12 @@ public class IHM extends Application{
 
 		Movie m1 = new Movie("The Hobbit", "12/14","Fantasy");
 		Movie m2 = new Movie("Godzilla", "05/14","Action");
+		Movie m3 = new Movie("124905");
+		Movie m4 = new Movie("929");
+		Movie m5 = new Movie("1678");
+		Movie m6 = new Movie("3171");
+		Movie m7 = new Movie("18983");
+		Movie m8 = new Movie("69724");
 
 		TilePane tp = new TilePane();
 		tp.setPrefColumns(2);
