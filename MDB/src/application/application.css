@@ -1,0 +1,21 @@
+#plotText {
+	-fx-font: 10px Arial;
+}
+
+#commentText {
+	-fx-border-color: black;
+	-fx-background-color: transparent;
+    -fx-border-image-width: 4 4 4 4;  
+    -fx-border-image-insets: 0;  
+    -fx-border-image-repeat: stretch;  
+	    
+}
+
+#mainPane {
+   -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #143cdc, #32cd32);
+}
+
+#searchPane {
+   -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #ed0000, #6c0277);
+}
+
