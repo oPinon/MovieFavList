@@ -32,20 +32,6 @@ public class MovieTile extends Group{
 		hbox.setMaxWidth(500);
 		hbox.setMaxHeight(400);
 
-//		final DoubleProperty paneHeight = mp.prefHeightProperty(); 
-//		DoubleBinding tileHeight = new DoubleBinding() {
-//			{ 
-//				bind(paneHeight); 
-//			} 
-//			@Override 
-//			protected double computeValue() {
-//				if(paneHeight.getValue()/4 > hbox.getMinHeight()+30) return paneHeight.getValue()/4;
-//				if(paneHeight.getValue()/3 > hbox.getMinHeight()+30) return paneHeight.getValue()/3;
-//				if(paneHeight.getValue()/2 > hbox.getMinHeight()+30) return paneHeight.getValue()/2;
-//				else return paneHeight.getValue();
-//			} 
-//		};
-//
 		hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2));
 	//	hbox.prefWidthProperty().bind(mp.prefWidthProperty().divide(1));
 		//hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2).subtract(30));	

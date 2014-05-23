@@ -3,10 +3,6 @@ package application;
 import java.util.Map;
 import java.util.ArrayList;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
@@ -32,6 +28,21 @@ public class Movie {
 		this.releaseDate = (String) details.get("release_date");
 		this.genres = importGenres((ArrayList<Map<String,String>>) details.get(("genres")));
 		comments = new SimpleStringProperty();
+		this.plot = (String) details.get("overview");	
+		this.poster = new Image(Searcher.getImageURL((String) details.get("poster_path")));
+		this.rating = (Double) details.get("vote_average");
+
+
+	}
+	
+	public Movie(int id, String comments) {
+		this.id = id;
+
+		Map<String,Object> details = Searcher.getMovie(id);
+		this.title = (String) details.get("title");
+		this.releaseDate = (String) details.get("release_date");
+		this.genres = importGenres((ArrayList<Map<String,String>>) details.get(("genres")));
+		this.comments = new SimpleStringProperty(comments);
 		this.plot = (String) details.get("overview");	
 		this.poster = new Image(Searcher.getImageURL((String) details.get("poster_path")));
 		this.rating = (Double) details.get("vote_average");

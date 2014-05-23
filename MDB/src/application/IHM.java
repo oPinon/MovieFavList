@@ -1,66 +1,121 @@
 package application;
 
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class IHM extends Application{
 	public void start(final Stage stage) {
 		final BorderPane pane = new BorderPane();
-				
+
 		final Scene scene = new Scene(pane,600,600);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		scene.getStylesheets().add(getClass().getResource("SearchBox.css").toExternalForm());
 		//scene.setFill(Color.BLUE);
-		
+
 		final ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
-		sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(false);
 		sp.prefWidthProperty().bind(scene.widthProperty());
-		sp.setId("mainPane");
+		sp.setId("scrollPane");
+		
+		pane.setId("mainPane");
 
 		final MoviePane mp = new MoviePane();
 		sp.setContent(mp);
 
 		pane.setCenter(sp);
 
-		HBox box = new HBox(1);
+		HBox box = new HBox(3);
+		Button load = new Button("Load");
+		load.setGraphic(new ImageView(new Image("file:images/load-32.png")));
+		load.setContentDisplay(ContentDisplay.TOP);
+		load.setMaxHeight(Integer.MAX_VALUE);
+		load.setMaxWidth(Integer.MAX_VALUE);
+	//	load.prefWidthProperty().bind(scene.widthProperty().divide(3));
+		load.getStyleClass().add("circleButton");
+		load.setTooltip(new Tooltip("Load the list"));
+		load.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					BufferedReader br = new BufferedReader(new FileReader("favs.txt"));
+					String id;
+					String comments = null;
+					String line = br.readLine();
 
-		Button add = new Button("Add new Movie");
+					while (line != null && line.equals("#")) {
+						line = br.readLine();
+						id = line;
+						line = br.readLine();
+						comments = line;
+						mp.add(new Movie(Integer.parseInt(id),comments));
+						line = br.readLine();
+					}
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		Button save = new Button("Save");
+		save.setGraphic(new ImageView(new Image("file:images/save-32.png")));
+		save.setContentDisplay(ContentDisplay.TOP);
+		save.setMaxHeight(Integer.MAX_VALUE);
+		save.setMaxWidth(Integer.MAX_VALUE);
+	//	save.prefWidthProperty().bind(scene.widthProperty().divide(3));
+        save.getStyleClass().add("circleButton");
+		save.setTooltip(new Tooltip("Save the list"));
+		save.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {  
+				try {
+					StringBuilder builder = new StringBuilder();
+					BufferedWriter writer = new BufferedWriter( new FileWriter( "favs.txt"));
+
+					for(Movie m: mp.getMovies()){
+						builder.append("#\n");
+						builder.append(m.id);
+						builder.append("\n");
+						builder.append(m.comments.getValue());
+						builder.append("\n");
+					}
+					writer.write(builder.toString());
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		Button add = new Button("Add");
+		add.setGraphic(new ImageView(new Image("file:images/video-add-48.png")));
+		add.setContentDisplay(ContentDisplay.TOP);
 		add.setMaxHeight(Integer.MAX_VALUE);
 		add.setMaxWidth(Integer.MAX_VALUE);
-		add.prefWidthProperty().bind(scene.widthProperty().divide(1));
+		//add.prefWidthProperty().bind(scene.widthProperty().divide(3));
+		add.getStyleClass().add("bigCircleButton");
+		add.setTooltip(new Tooltip("Add new movies to the list"));
 		add.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
@@ -69,16 +124,9 @@ public class IHM extends Application{
 			}
 		});
 
-
-		box.getChildren().addAll(add);
-		pane.setBottom(box);
-
-		//tp.layout();
-		mp.add(new Movie(124905));
-		mp.add(new Movie(929));
-		mp.add(new Movie(1678));
-		mp.add(new Movie(3001));
-	//	mp.updateDisplay(false);
+		box.getChildren().addAll(load,save,add);
+		box.setAlignment(Pos.CENTER_RIGHT);
+		pane.setTop(box);
 
 		stage.setScene(scene);
 		stage.setTitle("Movie List");

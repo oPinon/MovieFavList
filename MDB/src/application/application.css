@@ -8,15 +8,66 @@
     -fx-border-image-width: 4 4 4 4;  
     -fx-border-image-insets: 0;  
     -fx-border-image-repeat: stretch;  
-	    
 }
 
 #mainPane {
    -fx-background-color: linear-gradient(from 0% 0% to 10% 100%, #d0e0e0 0%, #ffffff 50%, #b0c0c0 100%);
 }
 
+#scrollPane {
+   -fx-background-color: transparent;
+}
+
 #searchPane {
-   //-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #ed0000, #6c0277);
    -fx-background-color: white;
+}
+
+.circleButton{
+	-fx-background-radius: 60;
+    -fx-border-radius: 60;
+    -fx-background-color: transparent;
+}
+
+.circleButton:hover{
+    -fx-background-color: red;
+}
+
+.bigCircleButton{
+	-fx-background-radius: 50;
+    -fx-border-radius: 50;
+    -fx-background-color: transparent;
+}
+
+.bigCircleButton:hover{
+    -fx-background-color: red;
+}
+
+.search-box .text-field {
+    -fx-background-color: white;
+    -fx-background-insets: 1;
+    -fx-background-radius: 15;
+    -fx-padding: -9 5 -11 0;
+    -fx-border-image-source: url("../../images/search-3-16.png");
+	-fx-border-image-width: 16 16 16 30;
+    -fx-border-image-repeat: stretch; 
+    -fx-background-image: url("../../images/search-3-16.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left center;
+    
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: grey;
+}
+.search-box .text-field:focused {
+    -fx-background-color: -fx-focus-color, white;
+    -fx-background-insets: -1.4, 1;
+    -fx-background-radius: 14.4;
+}
+.search-box .button {
+    -fx-background-color: null;
+    -fx-background-image: url('../../images/x-mark-3-16.png');
+    -fx-background-image-repeat: stretch; 
+}
+.search-box .button:hover {
+    -fx-background-image: url('../../images/x-mark-3-16.png');
 }
 

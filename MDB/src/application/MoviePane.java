@@ -1,11 +1,15 @@
 package application;
 
+import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
+import javafx.util.Duration;
 
 public class MoviePane extends TilePane {
 
@@ -16,30 +20,10 @@ public class MoviePane extends TilePane {
 
 		setVgap(0);
 		setHgap(10);
-		
-	//	setId("mainPane");
-
 
 		Bindings.bindContentBidirectional(favs,this.getChildren());
 
 	}
-
-
-
-//	public void updateDisplay(boolean isPreview){
-//		for(Movie m: favs){	
-//			if(!isPreview){
-//				MovieTile mt = new MovieTile(m,mp);
-//				TilePane.setAlignment(mt, Pos.TOP_LEFT);
-//				getChildren().add(mt);
-//			}
-//			else{
-//				//MoviePreviewTile mt = new MoviePreviewTile(m,mp);
-//				TilePane.setAlignment(mt, Pos.TOP_LEFT);
-//				getChildren().add(mt);
-//			}
-//		}		
-//	}
 
 	public void add(Movie movie){
 		for(Node mt: favs){
@@ -51,25 +35,45 @@ public class MoviePane extends TilePane {
 		}	
 		MovieTile mt = new MovieTile(movie,this);
 		favs.add(mt);
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
+		ft.setFromValue(0);
+		ft.setToValue(1);
+		ft.play();
+
 		TilePane.setAlignment(mt, Pos.TOP_LEFT);
 	}
 
 	public void remove(Movie movie) {
-		for(Node mt: favs){
+		for(final Node mt: favs){
 			if(mt instanceof MovieTile){
 				if(((MovieTile) mt).movie.id==movie.id){
-					favs.remove(mt);
+					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
+					ft.setFromValue(1);
+					ft.setToValue(0);
+					ft.play();
+					ft.setOnFinished(new EventHandler<ActionEvent>(){
+			            public void handle(ActionEvent arg0) {
+			                	favs.remove(mt);
+			            }
+			        });
 					return;
 				}	
 			}		
 		}	
 	}
 
-
-
 	public void clear() {
 		favs.clear();
+	}
 
+	public ObservableList<Movie> getMovies() {
+		ObservableList<Movie> toReturn = FXCollections.observableArrayList();;
+		for(Node mt: favs){
+			if(mt instanceof MovieTile){			
+				toReturn.add( ((MovieTile) mt).movie );
+			}	
+		}			
+		return toReturn;
 	}
 
 
