@@ -25,36 +25,18 @@ public class MoviePreviewTile extends Group{
 		this.movie = movie;
 
 		final HBox hbox = new HBox(2);
-		//	hbox.setPrefHeight(500);
 		hbox.setMinWidth(300);
 		hbox.setMinHeight(200);
-		hbox.setMaxWidth(400);
+		hbox.setMaxWidth(450);
 		hbox.setMaxHeight(300);
 
-		//		final DoubleProperty paneHeight = mp.prefHeightProperty(); 
-		//		DoubleBinding tileHeight = new DoubleBinding() {
-		//			{ 
-		//				bind(paneHeight); 
-		//			} 
-		//			@Override 
-		//			protected double computeValue() {
-		//				if(paneHeight.getValue()/4 > hbox.getMinHeight()+30) return paneHeight.getValue()/4;
-		//				if(paneHeight.getValue()/3 > hbox.getMinHeight()+30) return paneHeight.getValue()/3;
-		//				if(paneHeight.getValue()/2 > hbox.getMinHeight()+30) return paneHeight.getValue()/2;
-		//				else return paneHeight.getValue();
-		//			} 
-		//		};
-		//
 		hbox.prefHeightProperty().bind(moviePreviewPane.prefHeightProperty().divide(3));
-		//	hbox.prefWidthProperty().bind(mp.prefWidthProperty().divide(1));
-		//hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2).subtract(30));	
-		//hbox.setAlignment(Pos.CENTER);
+		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(1.5));
 
 		ImageView imgView;
 		if(movie.poster.getHeight()!=0) imgView = new ImageView(movie.poster);
 		else imgView = new ImageView(new Image("file:images/placeholder.jpg"));
 
-	//	imgView.fitWidthProperty().bind(hbox.widthProperty().divide(1.5));
 		imgView.fitHeightProperty().bind(hbox.heightProperty());
 		imgView.setPreserveRatio(true);
 		imgView.setSmooth(true);	
@@ -76,8 +58,8 @@ public class MoviePreviewTile extends Group{
 		dateField.setTextOrigin(VPos.TOP);
 		dateField.setStroke(Color.GRAY);
 		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(movie.releaseDate).concat(")"));
-		
-		
+
+
 		Button addButton = new Button();
 		addButton.setGraphic(new ImageView(new Image("file:images/plus-4-16.png")));
 		addButton.setAlignment(Pos.BOTTOM_RIGHT);
@@ -85,10 +67,7 @@ public class MoviePreviewTile extends Group{
 		addButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-				
-				mp.add(movie);
-				
-
+				mp.add(new Movie(movie.id));
 			}
 		});
 

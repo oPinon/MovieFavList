@@ -7,6 +7,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
 public class SearchBox extends Region {
@@ -15,13 +17,14 @@ public class SearchBox extends Region {
 
 	public SearchBox() {
         setId("SearchBox");
-        getStyleClass().add("search-box");
+        getStyleClass().add("searchBox");
 		setMinHeight(24);
 		setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
 		
 		textBox = new TextField();
 		textBox.setMaxWidth(Integer.MAX_VALUE);
 		textBox.setPromptText("Search by title");
+
 		clearButton = new Button();
 		clearButton.setVisible(false);
 		getChildren().addAll(textBox, clearButton);
@@ -46,6 +49,10 @@ public class SearchBox extends Region {
 		clearButton.resizeRelocate(getWidth() - 24, 6, 16, 16);
 	}
 	
+	public TextField getTextField() {
+		return textBox;
+	}
+
 	public String getText() {
 		return textBox.getText();
 	}

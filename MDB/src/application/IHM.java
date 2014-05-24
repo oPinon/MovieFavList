@@ -8,11 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.SimpleListProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Button;
@@ -26,10 +31,10 @@ import javafx.stage.Stage;
 public class IHM extends Application{
 	public void start(final Stage stage) {
 		final BorderPane pane = new BorderPane();
+		pane.setId("mainPane");
 
 		final Scene scene = new Scene(pane,600,600);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		//scene.setFill(Color.BLUE);
 
 		final ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -37,13 +42,24 @@ public class IHM extends Application{
 		sp.setFitToHeight(false);
 		sp.prefWidthProperty().bind(scene.widthProperty());
 		sp.setId("scrollPane");
-		
-		pane.setId("mainPane");
 
 		final MoviePane mp = new MoviePane();
 		sp.setContent(mp);
 
-		pane.setCenter(sp);
+		final Label placeholder = new Label("No movie currently in the list");
+		placeholder.setAlignment(Pos.CENTER_RIGHT);
+		ObjectBinding<Node> b = new ObjectBinding<Node>() {
+			{
+				bind(mp.emptyProperty);
+			}
+
+			@Override
+			protected Node computeValue() {
+				if(!mp.emptyProperty.getValue()) return sp;
+				else return placeholder;
+			}
+		};
+		pane.centerProperty().bind(b);
 
 		HBox box = new HBox(3);
 		Button load = new Button("Load");
@@ -51,7 +67,7 @@ public class IHM extends Application{
 		load.setContentDisplay(ContentDisplay.TOP);
 		load.setMaxHeight(Integer.MAX_VALUE);
 		load.setMaxWidth(Integer.MAX_VALUE);
-	//	load.prefWidthProperty().bind(scene.widthProperty().divide(3));
+		//	load.prefWidthProperty().bind(scene.widthProperty().divide(3));
 		load.getStyleClass().add("circleButton");
 		load.setTooltip(new Tooltip("Load the list"));
 		load.setOnAction(new EventHandler<ActionEvent>(){
@@ -83,8 +99,8 @@ public class IHM extends Application{
 		save.setContentDisplay(ContentDisplay.TOP);
 		save.setMaxHeight(Integer.MAX_VALUE);
 		save.setMaxWidth(Integer.MAX_VALUE);
-	//	save.prefWidthProperty().bind(scene.widthProperty().divide(3));
-        save.getStyleClass().add("circleButton");
+		//	save.prefWidthProperty().bind(scene.widthProperty().divide(3));
+		save.getStyleClass().add("circleButton");
 		save.setTooltip(new Tooltip("Save the list"));
 		save.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
@@ -120,7 +136,7 @@ public class IHM extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				MovieSearchIHM ms = new MovieSearchIHM(mp);
-				ms.searchMovie();
+				ms.searchMovies();
 			}
 		});
 

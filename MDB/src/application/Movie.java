@@ -27,7 +27,7 @@ public class Movie {
 		this.title = (String) details.get("title");
 		this.releaseDate = (String) details.get("release_date");
 		this.genres = importGenres((ArrayList<Map<String,String>>) details.get(("genres")));
-		comments = new SimpleStringProperty();
+		comments = new SimpleStringProperty("");
 		this.plot = (String) details.get("overview");	
 		this.poster = new Image(Searcher.getImageURL((String) details.get("poster_path")));
 		this.rating = (Double) details.get("vote_average");

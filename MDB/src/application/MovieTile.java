@@ -26,22 +26,19 @@ public class MovieTile extends Group{
 		this.movie = movie;
 
 		final HBox hbox = new HBox(2);
-		//	hbox.setPrefHeight(500);
 		hbox.setMinWidth(300);
 		hbox.setMinHeight(200);
 		hbox.setMaxWidth(500);
 		hbox.setMaxHeight(400);
 
 		hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2));
-	//	hbox.prefWidthProperty().bind(mp.prefWidthProperty().divide(1));
-		//hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2).subtract(30));	
-		//hbox.setAlignment(Pos.CENTER);
+		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(2));
 
 		ImageView imgView;
 		if(movie.poster.getHeight()!=0) imgView = new ImageView(movie.poster);
 		else imgView = new ImageView(new Image("file:images/placeholder.jpg"));
 
-		imgView.fitWidthProperty().bind(hbox.widthProperty().divide(1.5));
+	//	imgView.fitWidthProperty().bind(hbox.widthProperty().divide(1.5));
 		imgView.fitHeightProperty().bind(hbox.heightProperty());
 		imgView.setPreserveRatio(true);
 		imgView.setSmooth(true);	
@@ -52,7 +49,7 @@ public class MovieTile extends Group{
 		ds.setColor(Color.color(0,0,0,0.3));
 		imgView.setEffect(ds);
 
-
+		
 		VBox vbox = new VBox(2);
 
 		HBox titleBox = new HBox(3);
@@ -72,7 +69,7 @@ public class MovieTile extends Group{
 		infoButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-
+				new MovieDetails(movie);
 			}
 		});
 		
@@ -93,17 +90,13 @@ public class MovieTile extends Group{
 		Text rateField = new Text();		
 		rateField.setTextOrigin(VPos.TOP);
 		rateField.setText("Rating: "+movie.rating);
-		
 		rateBox.getChildren().addAll(starView,rateField);
 
 		Text genreField = new Text();
-		//genreField.prefHeightProperty().bind(hbox.heightProperty().divide(5/1));
 		if(movie.genres != null) genreField.setText(movie.genres.toString());
 
 		TextArea comField = new TextArea();	
 		VBox.setVgrow(comField,Priority.ALWAYS);
-		//	comField.prefWidthProperty().bind(vbox.widthProperty());
-		//comField.prefHeightProperty().bind(hbox.heightProperty().divide(3));
 		comField.textProperty().bindBidirectional(movie.comments);
 		comField.setEditable(true);
 		comField.setWrapText(true);
@@ -122,6 +115,4 @@ public class MovieTile extends Group{
 		this.getChildren().addAll(hbox);
 
 	}
-
-
 }

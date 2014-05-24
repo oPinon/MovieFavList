@@ -2,6 +2,10 @@ package application;
 
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,6 +18,7 @@ import javafx.util.Duration;
 public class MoviePane extends TilePane {
 
 	private ObservableList<Node> favs = FXCollections.observableArrayList();
+	ReadOnlyBooleanProperty emptyProperty;
 
 	public MoviePane() {
 		//	setPrefColumns(2);
@@ -22,6 +27,7 @@ public class MoviePane extends TilePane {
 		setHgap(10);
 
 		Bindings.bindContentBidirectional(favs,this.getChildren());
+		emptyProperty = new SimpleListProperty<Node>(favs).emptyProperty();
 
 	}
 
