@@ -8,9 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.SimpleListProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -84,7 +82,7 @@ public class IHM extends Application{
 						id = line;
 						line = br.readLine();
 						comments = line;
-						mp.add(new Movie(Integer.parseInt(id),comments));
+						mp.add(new Movie(Integer.parseInt(id), comments!=null ? comments.replace("\\n", "\n") : null));
 						line = br.readLine();
 					}
 					br.close();
@@ -113,7 +111,7 @@ public class IHM extends Application{
 						builder.append("#\n");
 						builder.append(m.id);
 						builder.append("\n");
-						builder.append(m.comments.getValue());
+						builder.append(m.comments.getValue() != null ? m.comments.getValue().replace("\n", "\\n") : m.comments.getValue());
 						builder.append("\n");
 					}
 					writer.write(builder.toString());
