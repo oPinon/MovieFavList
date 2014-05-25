@@ -30,6 +30,17 @@
     -fx-background-color: lightblue;
 }
 
+.sortButton {
+	-fx-background-radius: 50;
+    -fx-border-radius: 50;
+    -fx-background-color: transparent;
+    -fx-font-style: italic;
+}
+
+.sortButton:hover {
+    -fx-background-color: lightblue;
+}
+
 .bigCircleButton {
 	-fx-background-radius: 50;
     -fx-border-radius: 50;

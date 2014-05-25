@@ -15,6 +15,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -149,8 +151,14 @@ public class IHM extends Application{
 			}
 		});
 		
+		Label sortLabel = new Label("Sort by:");
+		sortLabel.setGraphic(new ImageView(new Image("file:images/generic-sorting-32.png")));
+		sortLabel.setContentDisplay(ContentDisplay.TOP);
+		Separator separator = new Separator(Orientation.VERTICAL);
+		
 		Button titleFilter = new Button("Title");
-		titleFilter.setTooltip(new Tooltip("Sort the movies by their Title name"));
+		titleFilter.getStyleClass().add("sortButton");
+		titleFilter.setTooltip(new Tooltip("Sort the movies by their title"));
 		titleFilter.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
@@ -160,7 +168,9 @@ public class IHM extends Application{
 				mp.getChildren().addAll(sortedList);
 			}
 		});
-		Button releaseFilter = new Button("Release");
+		Button releaseFilter = new Button("Release date");
+		releaseFilter.getStyleClass().add("sortButton");
+		releaseFilter.setTooltip(new Tooltip("Sort the movies by their release date"));
 		releaseFilter.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
@@ -171,6 +181,8 @@ public class IHM extends Application{
 			}
 		});
 		Button ratingFilter = new Button("Rating");
+		ratingFilter.getStyleClass().add("sortButton");
+		ratingFilter.setTooltip(new Tooltip("Sort the movies by their community rating"));
 		ratingFilter.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
@@ -181,14 +193,14 @@ public class IHM extends Application{
 			}
 		});
 
-		box.getChildren().addAll(titleFilter,releaseFilter,ratingFilter,load,save,add);
+		box.getChildren().addAll(sortLabel,titleFilter,releaseFilter,ratingFilter,separator,load,save,add);
 		box.setAlignment(Pos.CENTER_RIGHT);
 		pane.setTop(box);
 
 		stage.setScene(scene);
 		stage.setTitle("Movie List");
-		stage.setMinHeight(250);
-		stage.setMinWidth(350);
+		stage.setMinHeight(350);
+		stage.setMinWidth(450);
 		stage.show();
 
 	}

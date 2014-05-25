@@ -14,6 +14,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MovieDetails {
@@ -21,6 +22,7 @@ public class MovieDetails {
 	public MovieDetails(Movie movie) {
 		Stage stage = new Stage();
 		stage.setTitle(movie.title);
+		stage.initModality(Modality.APPLICATION_MODAL);
 
 		Accordion details = new Accordion();
 		Scene scene = new Scene(details, 400,600);
@@ -30,9 +32,10 @@ public class MovieDetails {
 		info.setAlignment(Pos.CENTER);
 		info.setTranslateX(5);
 		Text id = new Text("ID : " + movie.id);
+		id.wrappingWidthProperty().bind(scene.widthProperty());
 		Text release = new Text("Release Date : " + movie.releaseDate);
 		release.wrappingWidthProperty().bind(scene.widthProperty());
-		Text director = new Text("Director : ");
+		Text director = new Text("Director : "+ movie.director);
 		director.wrappingWidthProperty().bind(scene.widthProperty());
 		FlowPane genre = new FlowPane();
 		for(String s : movie.genres) { genre.getChildren().add(new Button(s)); }
@@ -40,6 +43,8 @@ public class MovieDetails {
 
 		// the team that created the movie
 		VBox crew = new VBox();
+		crew.setAlignment(Pos.CENTER);
+		crew.setTranslateX(5);
 		if(movie.credits!=null) {
 			for(Map<String,String> member : (List<Map<String,String>>) movie.credits.get("crew")) {
 				HBox memberInfo = new HBox();
@@ -51,6 +56,8 @@ public class MovieDetails {
 
 		// a list of the actors
 		VBox cast = new VBox();
+		cast.setAlignment(Pos.CENTER);
+		cast.setTranslateX(5);
 		if(movie.credits!=null) {
 			for(Map<String,String> member : (List<Map<String,String>>) movie.credits.get("cast")) {
 				HBox memberInfo = new HBox();
@@ -77,13 +84,16 @@ public class MovieDetails {
 
 		TitledPane infoPane = new TitledPane("Info",info);
 		TitledPane posterPane = new TitledPane("Poster", poster);
+		TitledPane crewPane = new TitledPane("Creators", crew);
+		TitledPane castPane = new TitledPane("Actors", cast);
 		TitledPane plotPane = new TitledPane("Plot", plot);
 		TitledPane commentPane = new TitledPane("Comments", comments);
 
-		details.getPanes().addAll(infoPane,posterPane,plotPane,commentPane);
+		details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
+		
 		stage.setScene(scene);
+		stage.setResizable(false);
 		stage.show();
 
 	}
-
 }

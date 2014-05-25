@@ -18,6 +18,7 @@ public class Searcher {
 	private static final String KEY = "c004bc36ea17626b2bee62a7b7d5b0fb";
 	private static final String BASE_API = "http://api.themoviedb.org/3/";
 	private static final String MOVIE = "movie/";
+	private static final String CREDITS = "/credits";
 	private static final String IMAGE_API = "http://image.themoviedb.org/3/";
 
 	public List<Map<String, Object>> searchMovie( String query ) {
@@ -86,6 +87,23 @@ public class Searcher {
 				System.out.println(key + " : "+ rawMap.get(key));
 			}*/
 			return rawMap;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Map<String, Object> getCredits(int ID) {
+		try {
+			String url = BASE_API + MOVIE + ID + CREDITS + "?api_key=" + KEY;
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.readValue(new URL(url), Map.class);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

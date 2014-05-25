@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MovieSearchIHM {
@@ -24,8 +25,9 @@ public class MovieSearchIHM {
 	}
 
 	public void searchMovies(){
-
 		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		
 		BorderPane pane = new BorderPane();	
 		pane.setId("searchPane");
 
@@ -97,8 +99,8 @@ public class MovieSearchIHM {
 
 		stage.setScene(scene);
 		stage.setTitle("Movie Search");
-		stage.setMinHeight(250);
-		stage.setMinWidth(300);
+		stage.setMinHeight(350);
+		stage.setMinWidth(450);
 		stage.show();
 
 	}
