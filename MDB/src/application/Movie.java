@@ -1,5 +1,6 @@
 package application;
 
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
@@ -18,6 +19,7 @@ public class Movie {
 	public String plot;
 	public Image poster;
 	public String director;
+	public Map<String, Object> credits;
 
 
 	public Movie(int id) {
@@ -31,8 +33,8 @@ public class Movie {
 		this.plot = (String) details.get("overview");	
 		this.poster = new Image(Searcher.getImageURL((String) details.get("poster_path")));
 		this.rating = (Double) details.get("vote_average");
-
-
+		this.credits = Searcher.getCredits(id);
+		this.director = getDirector( (List<Map<String,String>>) this.credits.get("crew"));
 	}
 	
 	public Movie(int id, String comments) {
@@ -46,7 +48,8 @@ public class Movie {
 		this.plot = (String) details.get("overview");	
 		this.poster = new Image(Searcher.getImageURL((String) details.get("poster_path")));
 		this.rating = (Double) details.get("vote_average");
-
+		this.credits = Searcher.getCredits(id);
+		this.director = getDirector( (List<Map<String,String>>) this.credits.get("crew"));
 
 	}
 
@@ -56,6 +59,7 @@ public class Movie {
 		this.title = (String) preview.get("title");	
 		comments = new SimpleStringProperty();
 		this.poster = new Image(Searcher.getImageURL((String) preview.get("poster_path")));
+		this.director = getDirector( (List<Map<String,String>>) Searcher.getCredits(id).get("crew"));
 
 	}
 
@@ -67,7 +71,12 @@ public class Movie {
 		return toReturn;
 	}
 
-
+	static String getDirector(List<Map<String,String>> crew) {
+		for(Map<String,String> member : crew) {
+			if(member.get("job").equals("Director"))  { return member.get("name"); }
+		}
+		return "";
+	}
 
 
 
