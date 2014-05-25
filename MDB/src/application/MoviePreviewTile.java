@@ -57,7 +57,7 @@ public class MoviePreviewTile extends Group{
 		dateField.setTextOrigin(VPos.TOP);
 		dateField.setStroke(Color.GRAY);
 		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(movie.releaseDate).concat(")"));
-
+		Text director = new Text(movie.director);
 
 		Button addButton = new Button();
 		addButton.setGraphic(new ImageView(new Image("file:images/plus-4-16.png")));
@@ -70,7 +70,7 @@ public class MoviePreviewTile extends Group{
 			}
 		});
 
-		vbox.getChildren().addAll(nameField,dateField,addButton);
+		vbox.getChildren().addAll(nameField,dateField,director,addButton);
 
 		hbox.getChildren().addAll(imgView,vbox);
 
