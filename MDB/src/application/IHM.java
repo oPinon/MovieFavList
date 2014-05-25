@@ -6,6 +6,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
@@ -145,8 +148,40 @@ public class IHM extends Application{
 				ms.searchMovies();
 			}
 		});
+		
+		Button titleFilter = new Button("Title");
+		titleFilter.setTooltip(new Tooltip("Sort the movies by their Title name"));
+		titleFilter.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
+				Collections.sort(sortedList, new TitleComparator());
+				mp.getChildren().clear();
+				mp.getChildren().addAll(sortedList);
+			}
+		});
+		Button releaseFilter = new Button("Release");
+		releaseFilter.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
+				Collections.sort(sortedList, new ReleaseComparator());
+				mp.getChildren().clear();
+				mp.getChildren().addAll(sortedList);
+			}
+		});
+		Button ratingFilter = new Button("Rating");
+		ratingFilter.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
+				Collections.sort(sortedList, new RatingComparator());
+				mp.getChildren().clear();
+				mp.getChildren().addAll(sortedList);
+			}
+		});
 
-		box.getChildren().addAll(load,save,add);
+		box.getChildren().addAll(titleFilter,releaseFilter,ratingFilter,load,save,add);
 		box.setAlignment(Pos.CENTER_RIGHT);
 		pane.setTop(box);
 
@@ -158,6 +193,31 @@ public class IHM extends Application{
 
 	}
 
+	class TitleComparator implements Comparator<Node> {
+		@Override
+		public int compare(Node arg0, Node arg1) {
+			MovieTile m1 = (MovieTile) arg0;
+			MovieTile m2 = (MovieTile) arg1;
+			return m1.movie.title.compareToIgnoreCase(m2.movie.title);
+		}
+	}
+	class ReleaseComparator implements Comparator<Node> {
+		@Override
+		public int compare(Node arg0, Node arg1) {
+			MovieTile m1 = (MovieTile) arg0;
+			MovieTile m2 = (MovieTile) arg1;
+			return -m1.movie.releaseDate.compareToIgnoreCase(m2.movie.releaseDate);
+		}
+	}
+	class RatingComparator implements Comparator<Node> {
+		@Override
+		public int compare(Node arg0, Node arg1) {
+			MovieTile m1 = (MovieTile) arg0;
+			MovieTile m2 = (MovieTile) arg1;
+			return -Double.compare(m1.movie.rating,m2.movie.rating);
+		}
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
