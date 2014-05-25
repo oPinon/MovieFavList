@@ -29,7 +29,7 @@ public class MoviePane extends TilePane {
 
 	}
 
-	public void add(Movie movie){
+	public synchronized void add(Movie movie){
 		for(Node mt: favs){
 			if(mt instanceof MovieTile){
 				if(((MovieTile) mt).movie.id==movie.id){

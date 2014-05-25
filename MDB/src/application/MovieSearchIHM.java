@@ -3,6 +3,7 @@ package application;
 import java.util.List;
 import java.util.Map;
 
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -38,8 +39,8 @@ public class MovieSearchIHM {
 		sp.prefWidthProperty().bind(scene.widthProperty());
 		sp.setId("scrollPane");
 
-		final MoviePreviewPane ml = new MoviePreviewPane(list);
-		sp.setContent(ml);
+		final MoviePreviewPane mp = new MoviePreviewPane(list);
+		sp.setContent(mp);
 
 		HBox sbox = new HBox(2);
     	final SearchBox searchField = new SearchBox();
@@ -54,14 +55,21 @@ public class MovieSearchIHM {
 			@Override
 			public void handle(ActionEvent event) {
 				Searcher searcher = new Searcher();
-				ml.clear();
+				mp.clear();
 
 				String criteria = searchField.getText();
 				if(criteria.length()==0) return;
 
 				List<Map<String, Object>> results = searcher.searchMovie(criteria.replace(" ","+"));
 				for(Map<String, Object> entry: results){
-					ml.add(new Movie(entry));
+					final MoviePreviewLoader ml = new MoviePreviewLoader(entry);
+					ml.setOnSucceeded(new EventHandler<WorkerStateEvent>(){
+						@Override
+						public void handle(WorkerStateEvent event) {
+							mp.add(ml.getValue());
+						}
+					});
+					new Thread(ml).start();
 				}
 			}
 		};

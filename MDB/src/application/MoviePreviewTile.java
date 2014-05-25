@@ -20,17 +20,16 @@ import javafx.scene.text.Text;
 public class MoviePreviewTile extends Group{
 	public Movie movie;
 
-	public MoviePreviewTile(final Movie movie, MoviePreviewPane moviePreviewPane, final MoviePane mp) {
+	public MoviePreviewTile(final Movie movie, final MoviePane mainPane) {
 		super();
 		this.movie = movie;
 
 		final HBox hbox = new HBox(2);
-		hbox.setMinWidth(300);
-		hbox.setMinHeight(200);
-		hbox.setMaxWidth(450);
-		hbox.setMaxHeight(300);
+		hbox.setMinWidth(150);
+		hbox.setMinHeight(100);
+		hbox.setMaxWidth(300);
+		hbox.setMaxHeight(200);
 
-		hbox.prefHeightProperty().bind(moviePreviewPane.prefHeightProperty().divide(3));
 		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(1.5));
 
 		ImageView imgView;
@@ -67,7 +66,7 @@ public class MoviePreviewTile extends Group{
 		addButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-				mp.add(new Movie(movie.id));
+				mainPane.add(new Movie(movie.id));
 			}
 		});
 

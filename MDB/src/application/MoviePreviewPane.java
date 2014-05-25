@@ -15,35 +15,14 @@ public class MoviePreviewPane extends TilePane {
 	public MoviePreviewPane(MoviePane main) {
 		this.mp = main;
 
-		//	setPrefColumns(2);
-
 		setVgap(0);
 		setHgap(10);
 
-
-		Bindings.bindContentBidirectional(favs,this.getChildren());
-
+		Bindings.bindContentBidirectional(favs, this.getChildren());
 	}
 
-
-
-//	public void updateDisplay(boolean isPreview){
-//		for(Movie m: favs){	
-//			if(!isPreview){
-//				MovieTile mt = new MovieTile(m,mp);
-//				TilePane.setAlignment(mt, Pos.TOP_LEFT);
-//				getChildren().add(mt);
-//			}
-//			else{
-//				//MoviePreviewTile mt = new MoviePreviewTile(m,mp);
-//				TilePane.setAlignment(mt, Pos.TOP_LEFT);
-//				getChildren().add(mt);
-//			}
-//		}		
-//	}
-
 	public void add(Movie m){
-		MoviePreviewTile mt = new MoviePreviewTile(m,this, mp);
+		MoviePreviewTile mt = new MoviePreviewTile(m,mp);
 		favs.add(mt);
 		TilePane.setAlignment(mt, Pos.TOP_LEFT);
 	}

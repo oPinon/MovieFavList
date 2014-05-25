@@ -99,7 +99,7 @@ public class Searcher {
 	}
 	
 	public static String getImageURL(String image) {
-		return "http://image.tmdb.org/t/p/w154"+image;
+		return "http://image.tmdb.org/t/p/original"+image;
 		// replace "original" by "w92", "w154","w185","w342","w500","w780"
 	}
 }

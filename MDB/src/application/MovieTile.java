@@ -21,7 +21,7 @@ import javafx.scene.text.Text;
 public class MovieTile extends Group{
 	public Movie movie;
 
-	public MovieTile(final Movie movie, final MoviePane mp) {
+	public MovieTile(final Movie movie, final MoviePane mainPane) {
 		super();
 		this.movie = movie;
 
@@ -31,7 +31,7 @@ public class MovieTile extends Group{
 		hbox.setMaxWidth(500);
 		hbox.setMaxHeight(400);
 
-		hbox.prefHeightProperty().bind(mp.prefHeightProperty().divide(2));
+		hbox.prefHeightProperty().bind(mainPane.prefHeightProperty().divide(2));
 		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(2));
 
 		ImageView imgView;
@@ -80,7 +80,7 @@ public class MovieTile extends Group{
 		delButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-				mp.remove(movie);
+				mainPane.remove(movie);
 			}
 		});
 		titleBox.getChildren().addAll(nameField,dateField,infoButton,delButton);

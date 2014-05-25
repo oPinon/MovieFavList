@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -82,7 +83,14 @@ public class IHM extends Application{
 						id = line;
 						line = br.readLine();
 						comments = line;
-						mp.add(new Movie(Integer.parseInt(id), comments!=null ? comments.replace("\\n", "\n") : null));
+						final MovieLoader ml = new MovieLoader(Integer.parseInt(id), comments!=null ? comments.replace("\\n", "\n") : null);
+						ml.setOnSucceeded(new EventHandler<WorkerStateEvent>(){
+							@Override
+							public void handle(WorkerStateEvent event) {
+								mp.add(ml.getValue());
+							}
+						});
+						new Thread(ml).start();
 						line = br.readLine();
 					}
 					br.close();
