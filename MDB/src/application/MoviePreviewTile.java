@@ -1,5 +1,6 @@
 package application;
 
+import movie.Movie;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,25 +18,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class MoviePreviewTile extends Group{
+public class MoviePreviewTile extends Group implements MovieTile{
 	public Movie movie;
 
-	public MoviePreviewTile(final Movie movie, final MoviePane mainPane) {
+	public MoviePreviewTile(final Movie movie, final MovieMainPane mainPane) {
 		super();
 		this.movie = movie;
 
 		final HBox hbox = new HBox(2);
 		hbox.setMinWidth(150);
-		hbox.setMinHeight(100);
 		hbox.setMaxWidth(300);
-		hbox.setMaxHeight(200);
 
+		hbox.setPrefHeight(150);
 		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(1.5));
 
-		ImageView imgView;
-		if(movie.poster.getHeight()!=0) imgView = new ImageView(movie.poster);
-		else imgView = new ImageView(new Image("file:images/placeholder.jpg"));
-
+		ImageView imgView = new ImageView();
+		if(movie.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
+		else imgView.setImage(movie.poster);
+		
 		imgView.fitHeightProperty().bind(hbox.heightProperty());
 		imgView.setPreserveRatio(true);
 		imgView.setSmooth(true);	
@@ -59,8 +59,8 @@ public class MoviePreviewTile extends Group{
 		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(movie.releaseDate).concat(")"));
 		Text director = new Text(movie.director);
 
-		Button addButton = new Button();
-		addButton.setGraphic(new ImageView(new Image("file:images/plus-4-16.png")));
+		Button addButton = new Button("Add");
+		addButton.getStyleClass().add("movieButton");
 		addButton.setAlignment(Pos.BOTTOM_RIGHT);
 		VBox.setVgrow(addButton, Priority.ALWAYS);
 		addButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -83,5 +83,7 @@ public class MoviePreviewTile extends Group{
 
 	}
 
-
+	public Movie getMovie() {
+		return movie;
+	}
 }

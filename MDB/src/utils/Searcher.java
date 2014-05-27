@@ -1,4 +1,4 @@
-package application;
+package utils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -116,8 +116,9 @@ public class Searcher {
 		return null;
 	}
 	
-	public static String getImageURL(String image) {
-		return "http://image.tmdb.org/t/p/original"+image;
+	public static String getImageURL(String image, boolean isLowRes) {
+		if(!isLowRes) return "http://image.tmdb.org/t/p/original"+image;
+		else return "http://image.tmdb.org/t/p/w154"+image;
 		// replace "original" by "w92", "w154","w185","w342","w500","w780"
 	}
 }

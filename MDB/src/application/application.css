@@ -9,7 +9,7 @@
 }
 
 #mainPane {
-   -fx-background-color: linear-gradient(from 0% 0% to 10% 100%, #d0e0e0 0%, #ffffff 50%, #b0c0c0 100%);
+   -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #a1a2a4 0%, #e4eef7 1%, #ffffff 50%, #f1f6fb 100%);
 }
 
 #scrollPane {
@@ -17,62 +17,76 @@
 }
 
 #searchPane {
-   -fx-background-color: linear-gradient(from 0% 0% to 10% 100%, #d0e0e0 0%, #ffffff 50%, #b0c0c0 100%);
+   -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #a1a2a4 0%, #e4eef7 1%, #ffffff 50%, #f1f6fb 100%);
+}
+
+#optionBar {
+  -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #e6f0fa 49%, #dce6f4 50%, #dde9f7 97%, #ffffff 100%);
 }
 
 .circleButton {
-	-fx-background-radius: 50;
-    -fx-border-radius: 50;
+	-fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-background-color: transparent;
 }
 
 .circleButton:hover {
-    -fx-background-color: lightblue;
+    -fx-border-color: darkgrey;
+    -fx-background-color: #00151010;
+}
+
+.circleButton:pressed {
+     -fx-border-color: darkgrey;
+     -fx-background-color: linear-gradient(from 0% 0% to 10% 50%, #a1a2a4 0%, d2dce9 30%);
 }
 
 .sortButton {
-	-fx-background-radius: 50;
-    -fx-border-radius: 50;
+	-fx-background-radius: 3;
+    -fx-border-radius: 3;
     -fx-background-color: transparent;
     -fx-font-style: italic;
 }
 
 .sortButton:hover {
-    -fx-background-color: lightblue;
+     -fx-border-color: darkgrey;
+    -fx-background-color: #00151010;
 }
 
-.bigCircleButton {
-	-fx-background-radius: 50;
-    -fx-border-radius: 50;
-    -fx-background-color: transparent;
+.sortButton:pressed {
+     -fx-border-color: darkgrey;
+     -fx-background-color: linear-gradient(from 0% 0% to 10% 50%, #a1a2a4 0%, d2dce9 30%);
 }
 
-.bigCircleButton:hover {
-    -fx-background-color: lightblue;
+.movieButton {
+	-fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-border-color: lightgrey;
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #dddddd10 70%, #00000010 100%),
+   						 linear-gradient(from 0% 0% to 100% 0%, #dddddd10 90%, #00000010 100%);
+    -fx-font-style: italic;
 }
 
-.searchBox .text-field {
+.movieButton:hover {
+     -fx-border-color: darkgrey;
+    -fx-background-color: #00151010;
+}
+
+.movieButton:pressed {
+     -fx-border-color: darkgrey;
+     -fx-background-color: linear-gradient(from 0% 0% to 10% 50%, #a1a2a4 0%, d2dce9 30%);
+}
+
+.searchBox{
     -fx-background-color: white;
-    -fx-background-insets: 1;
+    -fx-border-color: lightgray;
     -fx-background-radius: 15;
-    -fx-padding: -9 5 -11 0;
-    -fx-border-image-source: url("../../images/search-3-16.png");
-	-fx-border-image-width: 16 16 16 30;
-    -fx-border-image-repeat: stretch; 
-    -fx-background-image: url("../../images/search-3-16.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: left center;
-    
+    -fx-border-radius: 15;
+     
     -fx-font-size: 13px;
     -fx-prompt-text-fill: grey;
 }
-.searchBox .text-field:focused {
-    -fx-background-color: -fx-focus-color, white;
-    -fx-background-insets: -1.4, 1;
-    -fx-background-radius: 14.4;
-}
-.searchBox .button {
-    -fx-background-color: transparent;
-    -fx-background-image: url('../../images/x-mark-3-16.png');
-    -fx-background-image-repeat: stretch; 
+.searchBox:focused {
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: black;
 }

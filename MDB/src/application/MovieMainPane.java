@@ -1,5 +1,6 @@
 package application;
 
+import movie.Movie;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -13,12 +14,12 @@ import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
 
-public class MoviePane extends TilePane {
+public class MovieMainPane extends TilePane implements MoviePane {
 
 	private ObservableList<Node> favs = FXCollections.observableArrayList();
 	ReadOnlyBooleanProperty emptyProperty;
 
-	public MoviePane() {
+	public MovieMainPane() {
 		//	setPrefColumns(2);
 
 		setVgap(0);
@@ -31,13 +32,13 @@ public class MoviePane extends TilePane {
 
 	public void add(Movie movie){
 		for(Node mt: favs){
-			if(mt instanceof MovieTile){
-				if(((MovieTile) mt).movie.id==movie.id){
+			if(mt instanceof MovieMainTile){
+				if(((MovieMainTile) mt).movie.id==movie.id){
 					return;
 				}	
 			}		
 		}	
-		MovieTile mt = new MovieTile(movie,this);
+		MovieMainTile mt = new MovieMainTile(movie,this);
 		favs.add(mt);
 		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
 		ft.setFromValue(0);
@@ -49,8 +50,8 @@ public class MoviePane extends TilePane {
 
 	public void remove(Movie movie) {
 		for(final Node mt: favs){
-			if(mt instanceof MovieTile){
-				if(((MovieTile) mt).movie.id==movie.id){
+			if(mt instanceof MovieMainTile){
+				if(((MovieMainTile) mt).movie.id==movie.id){
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);
@@ -73,8 +74,8 @@ public class MoviePane extends TilePane {
 	public ObservableList<Movie> getMovies() {
 		ObservableList<Movie> toReturn = FXCollections.observableArrayList();;
 		for(Node mt: favs){
-			if(mt instanceof MovieTile){			
-				toReturn.add( ((MovieTile) mt).movie );
+			if(mt instanceof MovieMainTile){			
+				toReturn.add( ((MovieMainTile) mt).movie );
 			}	
 		}			
 		return toReturn;

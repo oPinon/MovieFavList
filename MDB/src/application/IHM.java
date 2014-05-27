@@ -9,9 +9,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
+import movie.Movie;
+import movie.MovieLoader;
+import utils.DirectorComparator;
+import utils.InternetRatingComparator;
+import utils.RatingComparator;
+import utils.ReleaseComparator;
+import utils.TitleComparator;
 import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
+import javafx.collections.FXCollections;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,6 +28,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -26,13 +36,20 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class IHM extends Application{
+	private MovieMainPane mp;
+
 	public void start(final Stage stage) {
 		final BorderPane pane = new BorderPane();
 		pane.setId("mainPane");
@@ -47,7 +64,7 @@ public class IHM extends Application{
 		sp.prefWidthProperty().bind(scene.widthProperty());
 		sp.setId("scrollPane");
 
-		final MoviePane mp = new MoviePane();
+		mp = new MovieMainPane();
 		sp.setContent(mp);
 
 		final Label placeholder = new Label("No movie currently in the list");
@@ -65,7 +82,11 @@ public class IHM extends Application{
 		};
 		pane.centerProperty().bind(b);
 
-		HBox box = new HBox(3);
+		VBox topBox = new VBox(2);
+		HBox menuHBox = new HBox(2);
+		topBox.setId("optionBar");
+
+		HBox optionsBox = new HBox(3);
 		Button load = new Button("Load");
 		load.setGraphic(new ImageView(new Image("file:images/load-32.png")));
 		load.setContentDisplay(ContentDisplay.TOP);
@@ -77,35 +98,11 @@ public class IHM extends Application{
 		load.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					BufferedReader br = new BufferedReader(new FileReader("favs.txt"));
-					String id;
-					String comments = null;
-					String line = br.readLine();
-
-					while (line != null && line.equals("#")) {
-						line = br.readLine();
-						id = line;
-						line = br.readLine();
-						comments = line;
-						final MovieLoader ml = new MovieLoader(Integer.parseInt(id), comments!=null ? comments.replace("\\n", "\n") : null);
-						ml.setOnSucceeded(new EventHandler<WorkerStateEvent>(){
-							@Override
-							public void handle(WorkerStateEvent event) {
-								mp.add(ml.getValue());
-							}
-						});
-						new Thread(ml).start();
-						line = br.readLine();
-					}
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				load();
 			}
 		});
 
-		Button save = new Button("Save");
+		final Button save = new Button("Save");	
 		save.setGraphic(new ImageView(new Image("file:images/save-32.png")));
 		save.setContentDisplay(ContentDisplay.TOP);
 		save.setMaxHeight(Integer.MAX_VALUE);
@@ -116,22 +113,7 @@ public class IHM extends Application{
 		save.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {  
-				try {
-					StringBuilder builder = new StringBuilder();
-					BufferedWriter writer = new BufferedWriter( new FileWriter( "favs.txt"));
-
-					for(Movie m: mp.getMovies()){
-						builder.append("#\n");
-						builder.append(m.id);
-						builder.append("\n");
-						builder.append(m.comments.getValue() != null ? m.comments.getValue().replace("\n", "\\n") : m.comments.getValue());
-						builder.append("\n");
-					}
-					writer.write(builder.toString());
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				save();
 			}
 		});
 
@@ -141,7 +123,7 @@ public class IHM extends Application{
 		add.setMaxHeight(Integer.MAX_VALUE);
 		add.setMaxWidth(Integer.MAX_VALUE);
 		//add.prefWidthProperty().bind(scene.widthProperty().divide(3));
-		add.getStyleClass().add("bigCircleButton");
+		add.getStyleClass().add("circleButton");
 		add.setTooltip(new Tooltip("Add new movies to the list"));
 		add.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
@@ -150,86 +132,136 @@ public class IHM extends Application{
 				ms.searchMovies();
 			}
 		});
-		
-		Label sortLabel = new Label("Sort by:");
-		sortLabel.setGraphic(new ImageView(new Image("file:images/generic-sorting-32.png")));
-		sortLabel.setContentDisplay(ContentDisplay.TOP);
-		Separator separator = new Separator(Orientation.VERTICAL);
-		
-		Button titleFilter = new Button("Title");
-		titleFilter.getStyleClass().add("sortButton");
-		titleFilter.setTooltip(new Tooltip("Sort the movies by their title"));
-		titleFilter.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
-				Collections.sort(sortedList, new TitleComparator());
-				mp.getChildren().clear();
-				mp.getChildren().addAll(sortedList);
-			}
-		});
-		Button releaseFilter = new Button("Release date");
-		releaseFilter.getStyleClass().add("sortButton");
-		releaseFilter.setTooltip(new Tooltip("Sort the movies by their release date"));
-		releaseFilter.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
-				Collections.sort(sortedList, new ReleaseComparator());
-				mp.getChildren().clear();
-				mp.getChildren().addAll(sortedList);
-			}
-		});
-		Button ratingFilter = new Button("Rating");
-		ratingFilter.getStyleClass().add("sortButton");
-		ratingFilter.setTooltip(new Tooltip("Sort the movies by their community rating"));
-		ratingFilter.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
-				Collections.sort(sortedList, new RatingComparator());
-				mp.getChildren().clear();
-				mp.getChildren().addAll(sortedList);
-			}
-		});
 
-		box.getChildren().addAll(sortLabel,titleFilter,releaseFilter,ratingFilter,separator,load,save,add);
-		box.setAlignment(Pos.CENTER_RIGHT);
-		pane.setTop(box);
+		HBox sortBox = new HBox(4);
+		Label sortLabel = new Label("Sort by:  ");
+		//	sortLabel.setGraphic(new ImageView(new Image("file:images/generic-sorting-32.png")));
+		//	sortLabel.setContentDisplay(ContentDisplay.TOP);	
+		final ChoiceBox<String> cb = new ChoiceBox<String>(FXCollections.observableArrayList(
+				"Title", "Director", "Release date", "Personal rating", "Internet rating")
+				);		
+		cb.getSelectionModel().select(0);
+
+		Button sortAscendingButton = new Button();
+		sortAscendingButton.setGraphic(new ImageView(new Image("file:images/generic-sorting-2-32.png")));
+		sortAscendingButton.getStyleClass().add("sortButton");
+		sortAscendingButton.setTooltip(new Tooltip("Sort the movies in ascending order"));
+		sortAscendingButton.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {	
+				sort(cb.getSelectionModel().getSelectedIndex(),true);
+			}
+		});
+		Button sortDescendingButton = new Button();
+		sortDescendingButton.setGraphic(new ImageView(new Image("file:images/generic-sorting-32.png")));
+		sortDescendingButton.getStyleClass().add("sortButton");
+		sortDescendingButton.setTooltip(new Tooltip("Sort the movies in descending order"));
+		sortDescendingButton.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {	
+				sort(cb.getSelectionModel().getSelectedIndex(),false);
+			}
+		});
+		sortBox.getChildren().addAll(sortLabel,cb,sortAscendingButton,sortDescendingButton);
+		sortBox.setAlignment(Pos.CENTER_LEFT);
+		sortBox.setTranslateX(5);
+
+		optionsBox.getChildren().addAll(load,save,add);
+		optionsBox.setAlignment(Pos.CENTER_RIGHT);
+		HBox.setHgrow(sortBox, Priority.ALWAYS);
+		menuHBox.getChildren().addAll(sortBox,optionsBox);
+
+		topBox.getChildren().addAll(menuHBox,new Separator(Orientation.HORIZONTAL));
+		pane.setTop(topBox);
 
 		stage.setScene(scene);
 		stage.setTitle("Movie List");
 		stage.setMinHeight(350);
-		stage.setMinWidth(450);
+		stage.setMinWidth(550);
 		stage.show();
 
+		load();
+
 	}
 
-	class TitleComparator implements Comparator<Node> {
-		@Override
-		public int compare(Node arg0, Node arg1) {
-			MovieTile m1 = (MovieTile) arg0;
-			MovieTile m2 = (MovieTile) arg1;
-			return m1.movie.title.compareToIgnoreCase(m2.movie.title);
+	private void sort(int criteriaIndex, boolean isAscending){
+		ArrayList<Node> sortedList = new ArrayList<Node>(mp.getChildren());
+		switch(criteriaIndex){
+		case 0:			
+			Collections.sort(sortedList, new TitleComparator(isAscending));
+			break;
+		case 1:			
+			Collections.sort(sortedList, new DirectorComparator(isAscending));
+			break;
+		case 2:	
+			Collections.sort(sortedList, new ReleaseComparator(isAscending));
+			break;
+		case 3:	
+			Collections.sort(sortedList, new RatingComparator(isAscending));
+			break;
+		case 4:	
+			Collections.sort(sortedList, new InternetRatingComparator(isAscending));
+			break;
+
+		}	
+		mp.getChildren().clear();
+		mp.getChildren().addAll(sortedList);
+
+	}
+
+	private void load(){
+		try {
+
+			BufferedReader br = new BufferedReader(new FileReader("favs.txt"));
+			String id;
+			String rating;
+			String comments = null;
+			String line = br.readLine();
+
+			while (line != null && line.equals("#")) {
+				line = br.readLine();
+				id = line;
+				line = br.readLine();
+				rating = line;
+				line = br.readLine();
+				comments = line;
+				final MovieLoader ml = new MovieLoader(Integer.parseInt(id), Integer.parseInt(rating), comments!=null ? comments.replace("\\n", "\n") : null);		
+				ml.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					public void handle(WorkerStateEvent t) {
+						mp.add(ml.getValue());
+					}
+				});
+				new Thread(ml).start();
+				line = br.readLine();
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void save(){
+		try {
+			StringBuilder builder = new StringBuilder();
+			BufferedWriter writer = new BufferedWriter( new FileWriter( "favs.txt"));
+
+			for(Movie m: mp.getMovies()){
+				builder.append("#\n");
+				builder.append(m.id);
+				builder.append("\n");
+				builder.append(m.rating.getValue());
+				builder.append("\n");
+				builder.append(m.comments.getValue() != null ? m.comments.getValue().replace("\n", "\\n") : m.comments.getValue());
+				builder.append("\n");
+			}
+			writer.write(builder.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-	class ReleaseComparator implements Comparator<Node> {
-		@Override
-		public int compare(Node arg0, Node arg1) {
-			MovieTile m1 = (MovieTile) arg0;
-			MovieTile m2 = (MovieTile) arg1;
-			return -m1.movie.releaseDate.compareToIgnoreCase(m2.movie.releaseDate);
-		}
-	}
-	class RatingComparator implements Comparator<Node> {
-		@Override
-		public int compare(Node arg0, Node arg1) {
-			MovieTile m1 = (MovieTile) arg0;
-			MovieTile m2 = (MovieTile) arg1;
-			return -Double.compare(m1.movie.rating,m2.movie.rating);
-		}
-	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
