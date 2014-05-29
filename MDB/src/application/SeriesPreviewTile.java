@@ -1,6 +1,6 @@
 package application;
 
-import element.Movie;
+import element.Series;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,12 +18,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class MoviePreviewTile extends Group implements MovieTile{
-	public Movie movie;
+public class SeriesPreviewTile extends Group implements SeriesTile{
+	public Series series;
 
-	public MoviePreviewTile(final Movie movie, final MovieMainPane mainPane) {
+	public SeriesPreviewTile(final Series series, final SeriesMainPane smp) {
 		super();
-		this.movie = movie;
+		this.series = series;
 
 		final HBox hbox = new HBox(2);
 		hbox.setMinWidth(150);
@@ -33,8 +33,8 @@ public class MoviePreviewTile extends Group implements MovieTile{
 		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(1.5));
 
 		ImageView imgView = new ImageView();
-		if(movie.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
-		else imgView.setImage(movie.poster);
+		if(series.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
+		else imgView.setImage(series.poster);
 		
 		imgView.fitHeightProperty().bind(hbox.heightProperty());
 		imgView.setPreserveRatio(true);
@@ -52,13 +52,15 @@ public class MoviePreviewTile extends Group implements MovieTile{
 		Text nameField = new Text();		
 		nameField.setTextOrigin(VPos.TOP);
 		nameField.setStroke(Color.BLACK);
-		nameField.setText(movie.title);
+		nameField.setText(series.name);
 		Text dateField = new Text();		
 		dateField.setTextOrigin(VPos.TOP);
 		dateField.setStroke(Color.GRAY);
-		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(movie.releaseDate).concat(")"));
-		Text director = new Text(movie.director);
-
+		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(series.firstAirDate).concat(")"));
+		Text creatorsField = new Text();
+		creatorsField.setText(series.creators.toString().replace("[", "").replace("]", ""));
+		
+		
 		Button addButton = new Button("Add");
 		addButton.getStyleClass().add("movieButton");
 		addButton.setAlignment(Pos.BOTTOM_RIGHT);
@@ -66,11 +68,11 @@ public class MoviePreviewTile extends Group implements MovieTile{
 		addButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-				mainPane.add(new Movie(movie.id));
+				smp.add(new Series(series.id));
 			}
 		});
 
-		vbox.getChildren().addAll(nameField,dateField,director,addButton);
+		vbox.getChildren().addAll(nameField,dateField,creatorsField,addButton);
 
 		hbox.getChildren().addAll(imgView,vbox);
 
@@ -83,7 +85,7 @@ public class MoviePreviewTile extends Group implements MovieTile{
 
 	}
 
-	public Movie getMovie() {
-		return movie;
+	public Series getSeries() {
+		return series;
 	}
 }

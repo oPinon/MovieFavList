@@ -1,4 +1,4 @@
-package movie;
+package element;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class MovieLoader extends Task<Movie>{
 	}
 
 	protected Movie call() throws Exception {
-		if(entry ==null) return new Movie(id, rating, comments);
+		if(entry == null) return new Movie(id, rating, comments);
 		else return new Movie(entry);
 	}
 

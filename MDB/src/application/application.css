@@ -21,7 +21,7 @@
 }
 
 #optionBar {
-  -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #e6f0fa 49%, #dce6f4 50%, #dde9f7 97%, #ffffff 100%);
+  -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #e6f0fa 45%, #dce6f4 50%, #dde9f7 98%, #000000 100%);
 }
 
 .circleButton {
@@ -86,7 +86,5 @@
     -fx-prompt-text-fill: grey;
 }
 .searchBox:focused {
-    -fx-background-radius: 15;
-    -fx-border-radius: 15;
     -fx-border-color: black;
 }

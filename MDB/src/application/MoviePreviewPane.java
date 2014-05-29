@@ -1,8 +1,10 @@
 package application;
 
-import movie.Movie;
+import element.Movie;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,19 +17,21 @@ import javafx.util.Duration;
 public class MoviePreviewPane extends TilePane implements MoviePane {
 
 	ObservableList<Node> favs = FXCollections.observableArrayList();
-	MovieMainPane mp;
+	MovieMainPane mmp;
+	ReadOnlyBooleanProperty emptyProperty;
 
-	public MoviePreviewPane(MovieMainPane main) {
-		this.mp = main;
+	public MoviePreviewPane(MovieMainPane mmp) {
+		this.mmp = mmp;
 
 		setVgap(0);
 		setHgap(10);
 
 		Bindings.bindContentBidirectional(favs, this.getChildren());
+		emptyProperty = new SimpleListProperty<Node>(favs).emptyProperty();
 	}
 
 	public void add(Movie m){
-		MoviePreviewTile mt = new MoviePreviewTile(m,mp);
+		MoviePreviewTile mt = new MoviePreviewTile(m,mmp);
 		favs.add(mt);
 		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
 		ft.setFromValue(0);

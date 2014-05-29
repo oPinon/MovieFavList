@@ -1,6 +1,6 @@
 package application;
 
-import movie.Movie;
+import element.Movie;
 
 public interface MovieTile {
 	public Movie getMovie();

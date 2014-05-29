@@ -1,6 +1,6 @@
 package application;
 
-import element.Movie;
+import element.Series;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -14,12 +14,12 @@ import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
 
-public class MovieMainPane extends TilePane implements MoviePane {
+public class SeriesMainPane extends TilePane implements SeriesPane {
 
 	private ObservableList<Node> favs = FXCollections.observableArrayList();
 	ReadOnlyBooleanProperty emptyProperty;
 
-	public MovieMainPane() {
+	public SeriesMainPane() {
 		//	setPrefColumns(2);
 
 		setVgap(0);
@@ -30,28 +30,28 @@ public class MovieMainPane extends TilePane implements MoviePane {
 
 	}
 
-	public void add(Movie movie){
-		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
+	public void add(Series series){
+		for(Node st: favs){
+			if(st instanceof SeriesMainTile){
+				if(((SeriesMainTile) st).series.id==series.id){
 					return;
 				}	
 			}		
 		}	
-		MovieMainTile mmt = new MovieMainTile(movie,this);
-		synchronized(this) {favs.add(mmt);}
-		FadeTransition ft = new FadeTransition(Duration.millis(1000), mmt);
+		SeriesMainTile smt = new SeriesMainTile(series,this);
+		synchronized(this) {favs.add(smt);}
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), smt);
 		ft.setFromValue(0);
 		ft.setToValue(1);
 		ft.play();
 
-		TilePane.setAlignment(mmt, Pos.TOP_LEFT);
+		TilePane.setAlignment(smt, Pos.TOP_LEFT);
 	}
 
-	public void remove(Movie movie) {
+	public void remove(Series series) {
 		for(final Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
+			if(mt instanceof SeriesMainTile){
+				if(((SeriesMainTile) mt).series.id==series.id){
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);
@@ -71,11 +71,11 @@ public class MovieMainPane extends TilePane implements MoviePane {
 		favs.clear();
 	}
 
-	public ObservableList<Movie> getMovies() {
-		ObservableList<Movie> toReturn = FXCollections.observableArrayList();;
+	public ObservableList<Series> getSeries() {
+		ObservableList<Series> toReturn = FXCollections.observableArrayList();;
 		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){			
-				toReturn.add( ((MovieMainTile) mt).movie );
+			if(mt instanceof SeriesMainTile){			
+				toReturn.add( ((SeriesMainTile) mt).series );
 			}	
 		}			
 		return toReturn;

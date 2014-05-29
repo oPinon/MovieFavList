@@ -68,13 +68,13 @@ public class ExempleRecherche {
 	
 	public static void main(String[] args) {
 		ExempleRecherche searcher = new ExempleRecherche();
-		String film1 = "Godzilla";
-		searcher.rechercherDansLesFilms(film1);
-		/*String filmVengeance = "Revenge";
-		searcher.rechercherDansLesFilms(filmVengeance);
+	//	String film1 = "Godzilla";
+	//	searcher.rechercherDansLesFilms(film1);
+	//	String filmVengeance = "Revenge";
+	//	searcher.rechercherDansLesFilms(filmVengeance);
 		
 		String serie1 = "Game";
-		searcher.rechercherDansLesSeriesTV(serie1);*/
+		searcher.rechercherDansLesSeriesTV(serie1);
 		
 	}
 	

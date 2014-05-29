@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import utils.Searcher;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -26,32 +27,34 @@ public class ExempleDetail extends Application{
 	// tous les �l�ves utiliseront cette cl�. Elle nous a �t� fournie par les admnistrateurs de TMDB
 	private static final String KEY = "c004bc36ea17626b2bee62a7b7d5b0fb";
 	// remarque: cet ID a �t� obtenu en faisant une recherche sur cette base de donn�es
-	private static final String ID = "124905";
+	private static final String ID = "9929"; //got 1399
 	private static final String BASE_API = "http://api.themoviedb.org/3/";
 	private static final String MOVIE = "movie/";
+	private static final String TV = "tv/";
 	public static final String IMAGE_API = "http://image.themoviedb.org/3/";
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root,500,800);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//	scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			String url = BASE_API + MOVIE + ID + "?api_key=" + KEY;
-		    String imgURL = recupererLePoster(url);
-		    String urlImg = "http://image.tmdb.org/t/p/w500" + imgURL;
-		    Image img = new Image(urlImg);
-		    ImageView view = new ImageView(img);
-		    root.setCenter(view);
-		    primaryStage.setScene(scene);
+			String imgURL = recupererLePoster(url);
+			String urlImg = "http://image.tmdb.org/t/p/w500" + imgURL;
+			Image img = new Image(urlImg);
+			ImageView view = new ImageView(img);
+			root.setCenter(view);
+			primaryStage.setScene(scene);
 			primaryStage.show();
-			
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private String recupererLePoster(String url) {
+		String toReturn = "";
 		try {
 			// Cet objet permet d'extraire les informations retourn�es par le serveur et de les organiser sous forme de paires
 			// {cl�/valeur}. Exemple: "original_title" / "Star Wars: Episode IV - A New Hope"
@@ -60,11 +63,13 @@ public class ExempleDetail extends Application{
 
 			// contrairement � l'exemple de la recherche, quand on requ�te un �l�ment pr�cis (par son ID), on obtient directement la liste des cl�s/valeurs.
 			for(String key: rawMap.keySet()) {
+
 				if (key.equals("poster_path")) {
-					return rawMap.get(key).toString();
+					toReturn = rawMap.get(key).toString();
 				}
+				System.out.println("key = " + key + " / value =  " + rawMap.get(key));
 			} 
-			System.out.println();
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -74,11 +79,13 @@ public class ExempleDetail extends Application{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return toReturn;
 	}
-	
+
 	public static void main(String[] args) {
-		launch(args);		
+		launch(args);	
+
+
 	}
-	
+
 }

@@ -1,6 +1,6 @@
 package application;
 
-import element.Movie;
+import element.Series;
 import javafx.beans.binding.When;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -30,12 +30,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class MovieMainTile extends Group implements MovieTile{
-	public Movie movie;
+public class SeriesMainTile extends Group implements SeriesTile{
+	public Series series;
 
-	public MovieMainTile(final Movie movie, final MovieMainPane mainPane) {
+	public SeriesMainTile(final Series series, final SeriesMainPane seriesMainPane) {
 		super();
-		this.movie = movie;
+		this.series = series;
 
 		final HBox hbox = new HBox(2);
 		hbox.setMinWidth(300);
@@ -45,8 +45,8 @@ public class MovieMainTile extends Group implements MovieTile{
 		hbox.prefWidthProperty().bind(hbox.prefHeightProperty().multiply(3));
 
 		ImageView imgView = new ImageView();
-		if(movie.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
-		else imgView.setImage(movie.poster);
+		if(series.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
+		else imgView.setImage(series.poster);
 
 		imgView.fitHeightProperty().bind(hbox.prefHeightProperty());
 		imgView.setPreserveRatio(true);
@@ -56,7 +56,7 @@ public class MovieMainTile extends Group implements MovieTile{
 			public void handle(MouseEvent mouseEvent) {
 				if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 					if(mouseEvent.getClickCount() == 2){
-						new MovieDetails(movie);
+						new SeriesDetails(series);
 					}
 				}
 			}
@@ -75,13 +75,13 @@ public class MovieMainTile extends Group implements MovieTile{
 		Text nameField = new Text();		
 		nameField.setTextOrigin(VPos.TOP);
 		nameField.setStroke(Color.BLACK);
-		nameField.setText(movie.title);
+		nameField.setText(series.name);
 		Text dateField = new Text();		
 		dateField.setTextOrigin(VPos.TOP);
 		dateField.setStroke(Color.GRAY);
-		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(movie.releaseDate).concat(")"));
+		dateField.textProperty().bind(new SimpleStringProperty(" (").concat(series.firstAirDate).concat(")"));
 		titleBox.getChildren().addAll(nameField,dateField);
-		Text directorField = new Text(movie.director);
+		Text directorField = new Text(series.creators.toString().replace("[", "").replace("]", ""));
 
 		HBox buttonBox = new HBox(2);
 		Button infoButton = new Button("Info");
@@ -92,7 +92,7 @@ public class MovieMainTile extends Group implements MovieTile{
 		infoButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-				new MovieDetails(movie);
+				new SeriesDetails(series);
 			}
 		});
 
@@ -104,7 +104,7 @@ public class MovieMainTile extends Group implements MovieTile{
 		delButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-				mainPane.remove(movie);
+				seriesMainPane.remove(series);
 			}
 		});
 		buttonBox.getChildren().addAll(infoButton,delButton);
@@ -115,17 +115,17 @@ public class MovieMainTile extends Group implements MovieTile{
 		minus.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-				movie.decreaseRating();
+				series.decreaseRating();
 			}
 		});
 		
 		HBox starBox = new HBox(5);	
 		for (int i = 1; i <= 5; i++) { 
 			ImageView starView = new ImageView(); 
-			starView.imageProperty().bind(new When(movie.rating.greaterThanOrEqualTo(i*2)) 
+			starView.imageProperty().bind(new When(series.rating.greaterThanOrEqualTo(i*2)) 
 			.then(new Image("file:images/star-full.png"))
 			.otherwise(		
-					new When(movie.rating.subtract(i*2).greaterThanOrEqualTo(-1))
+					new When(series.rating.subtract(i*2).greaterThanOrEqualTo(-1))
 					.then(new Image("file:images/star-half.png"))
 					.otherwise(new Image("file:images/star-empty.png"))
 					)
@@ -139,20 +139,20 @@ public class MovieMainTile extends Group implements MovieTile{
 		plus.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {			
-				movie.increaseRating();
+				series.increaseRating();
 			}
 		});
 		Text rateField = new Text();		
 		rateField.setTextOrigin(VPos.TOP);
-		rateField.setText(" Internet rating: "+movie.internetRating);
+		rateField.setText(" Internet rating: "+series.internetRating);
 		rateBox.getChildren().addAll(minus,starBox,plus,rateField);
 
 		FlowPane genreField = new FlowPane();
-		for(String s : movie.genres) { genreField.getChildren().add(new Button(s)); }
+		for(String s : series.genres) { genreField.getChildren().add(new Button(s)); }
 
 		TextArea comField = new TextArea();	
 		VBox.setVgrow(comField,Priority.ALWAYS);
-		comField.textProperty().bindBidirectional(movie.comments);
+		comField.textProperty().bindBidirectional(series.comments);
 		comField.setEditable(true);
 		comField.setWrapText(true);
 		comField.setId("commentText");
@@ -173,7 +173,7 @@ public class MovieMainTile extends Group implements MovieTile{
 
 	}
 
-	public Movie getMovie() {
-		return movie;
+	public Series getSeries() {
+		return series;
 	}
 }

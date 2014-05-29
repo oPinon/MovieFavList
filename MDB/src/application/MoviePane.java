@@ -1,6 +1,6 @@
 package application;
 
-import movie.Movie;
+import element.Movie;
 import javafx.collections.ObservableList;
 
 public interface MoviePane {

@@ -1,6 +1,5 @@
 package application;
 
-import element.Movie;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -13,45 +12,39 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
+import element.Series;
 
-public class MovieMainPane extends TilePane implements MoviePane {
+public class SeriesPreviewPane extends TilePane implements SeriesPane {
 
-	private ObservableList<Node> favs = FXCollections.observableArrayList();
+	ObservableList<Node> favs = FXCollections.observableArrayList();
+	SeriesMainPane smp;
 	ReadOnlyBooleanProperty emptyProperty;
 
-	public MovieMainPane() {
-		//	setPrefColumns(2);
+	public SeriesPreviewPane(SeriesMainPane smp) {
+		this.smp = smp;
 
 		setVgap(0);
 		setHgap(10);
 
-		Bindings.bindContentBidirectional(favs,this.getChildren());
+		Bindings.bindContentBidirectional(favs, this.getChildren());
 		emptyProperty = new SimpleListProperty<Node>(favs).emptyProperty();
-
 	}
 
-	public void add(Movie movie){
-		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
-					return;
-				}	
-			}		
-		}	
-		MovieMainTile mmt = new MovieMainTile(movie,this);
-		synchronized(this) {favs.add(mmt);}
-		FadeTransition ft = new FadeTransition(Duration.millis(1000), mmt);
+	public void add(Series series){
+		SeriesPreviewTile mt = new SeriesPreviewTile(series,smp);
+		favs.add(mt);
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
 		ft.setFromValue(0);
 		ft.setToValue(1);
 		ft.play();
-
-		TilePane.setAlignment(mmt, Pos.TOP_LEFT);
+		
+		TilePane.setAlignment(mt, Pos.TOP_LEFT);
 	}
 
-	public void remove(Movie movie) {
+	public void remove(Series series) {
 		for(final Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
+			if(mt instanceof SeriesMainTile){
+				if(((SeriesMainTile) mt).series.id==series.id){
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);
@@ -69,13 +62,14 @@ public class MovieMainPane extends TilePane implements MoviePane {
 
 	public void clear() {
 		favs.clear();
+
 	}
 
-	public ObservableList<Movie> getMovies() {
-		ObservableList<Movie> toReturn = FXCollections.observableArrayList();;
+	public ObservableList<Series> getSeries() {
+		ObservableList<Series> toReturn = FXCollections.observableArrayList();;
 		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){			
-				toReturn.add( ((MovieMainTile) mt).movie );
+			if(mt instanceof SeriesMainTile){			
+				toReturn.add( ((SeriesMainTile) mt).series );
 			}	
 		}			
 		return toReturn;
