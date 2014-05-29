@@ -18,13 +18,14 @@ import utils.InternetRatingComparator;
 import utils.RatingComparator;
 import utils.ReleaseComparator;
 import utils.TitleComparator;
-import javafx.application.Application;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -32,7 +33,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -40,6 +40,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -54,24 +55,24 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class MainIHM extends Application{
-	private MovieMainPane mp;
-	private SeriesMainPane sp;
+public class CollectionTab extends BorderPane{
+	Stage stage;
+
+	MovieMainPane mp;
+	SeriesMainPane sp;
 	StringProperty fileName = new SimpleStringProperty();
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
-	public void start(final Stage stage) {
-		final BorderPane pane = new BorderPane();
-		pane.setId("mainPane");
+	public CollectionTab(final Stage stage) {
+		super();
+		this.setId("mainPane");
 
-		final Scene scene = new Scene(pane,600,600);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		this.stage = stage;
 
 		final ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(false);
-		scrollPane.prefWidthProperty().bind(scene.widthProperty());
 		scrollPane.setId("scrollPane");
 
 		mp = new MovieMainPane();
@@ -96,19 +97,16 @@ public class MainIHM extends Application{
 				else return placeholder;
 			}
 		};
-		pane.centerProperty().bind(b);
+		this.centerProperty().bind(b);
 
 		ToolBar toolbar = new ToolBar();
-		//	HBox menuHBox = new HBox(2);
 		toolbar.setId("optionBar");
 
-		//	HBox optionsBox = new HBox(3);
 		Button load = new Button("Load");
 		load.setGraphic(new ImageView(new Image("file:images/load-32.png")));
 		load.setContentDisplay(ContentDisplay.TOP);
 		load.setMaxHeight(Integer.MAX_VALUE);
 		load.setMaxWidth(Integer.MAX_VALUE);
-		//	load.prefWidthProperty().bind(scene.widthProperty().divide(3));
 		load.getStyleClass().add("circleButton");
 		load.setTooltip(new Tooltip("Load a list"));
 		load.setOnAction(new EventHandler<ActionEvent>(){
@@ -134,7 +132,6 @@ public class MainIHM extends Application{
 		save.setContentDisplay(ContentDisplay.TOP);
 		save.setMaxHeight(Integer.MAX_VALUE);
 		save.setMaxWidth(Integer.MAX_VALUE);
-		//	save.prefWidthProperty().bind(scene.widthProperty().divide(3));
 		save.getStyleClass().add("circleButton");
 		save.setTooltip(new Tooltip("Save the list"));
 		save.setOnAction(new EventHandler<ActionEvent>(){
@@ -155,22 +152,6 @@ public class MainIHM extends Application{
 			}
 		});
 
-		Button add = new Button("Add");
-		add.setGraphic(new ImageView(new Image("file:images/video-add-48.png")));
-		add.setContentDisplay(ContentDisplay.TOP);
-		add.setMaxHeight(Integer.MAX_VALUE);
-		add.setMaxWidth(Integer.MAX_VALUE);
-		//add.prefWidthProperty().bind(scene.widthProperty().divide(3));
-		add.getStyleClass().add("circleButton");
-		add.setTooltip(new Tooltip("Add new movies to the list"));
-		add.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				SearchIHM ms = new SearchIHM(mp,sp);
-				ms.search();
-			}
-		});
-
 		VBox modeBox = new VBox(2);
 		ToggleButton tb1 = new ToggleButton("Movies");
 		tb1.setMaxWidth(Integer.MAX_VALUE);
@@ -182,6 +163,15 @@ public class MainIHM extends Application{
 		tb1.setToggleGroup(group);
 		tb2.setToggleGroup(group);
 		group.selectToggle(tb1);
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov,
+					Toggle toggle, Toggle new_toggle) {
+				if (new_toggle == null) {
+					toggle.setSelected(true);                                    
+				}
+			}
+		});
+
 		areMoviesSelected.bind(group.selectedToggleProperty().isEqualTo(tb1));
 
 		modeBox.getChildren().addAll(tb1,tb2);
@@ -223,20 +213,9 @@ public class MainIHM extends Application{
 		sortBox.setTranslateX(5);
 		HBox.setHgrow(sortBox, Priority.ALWAYS);
 
-		//	optionsBox.getChildren().addAll(load,save,add);
-		//	optionsBox.setAlignment(Pos.CENTER_RIGHT);
-		//menuHBox.getChildren().addAll(sortBox,optionsBox);
+		toolbar.getItems().addAll(sortBox,load,save);
+		this.setTop(toolbar);
 
-		toolbar.getItems().addAll(sortBox,load,save,add);
-		pane.setTop(toolbar);
-
-		stage.setScene(scene);
-		stage.titleProperty().bind(new When(fileName.isNotNull())
-		.then( new SimpleStringProperty("Movie List - ").concat(fileName))
-		.otherwise( new SimpleStringProperty("Movie List - No title")) );				
-		stage.setMinHeight(350);
-		stage.setMinWidth(550);
-		stage.show();
 	}
 
 	private void sort(int criteriaIndex, boolean isAscending){
@@ -369,7 +348,4 @@ public class MainIHM extends Application{
 		}
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
 }

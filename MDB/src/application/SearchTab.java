@@ -5,12 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import element.Movie;
 import element.MovieLoader;
 import element.SeriesLoader;
 import utils.DirectorComparator;
-import utils.InternetRatingComparator;
-import utils.RatingComparator;
 import utils.ReleaseComparator;
 import utils.Searcher;
 import utils.TitleComparator;
@@ -18,6 +15,8 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -25,11 +24,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -44,38 +44,27 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class SearchIHM {
+public class SearchTab extends BorderPane{
 	private MovieMainPane mmp;
 	private SeriesMainPane smp;
 	private MoviePreviewPane mpp;
 	private SeriesPreviewPane spp;
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
-	public SearchIHM(MovieMainPane mmp, SeriesMainPane smp) {
-		this.mmp = mmp;
-		this.smp = smp;
+	public SearchTab(CollectionTab colTab) {
+		super();
+		this.setId("searchPane");
+
+		this.mmp = colTab.mp;
+		this.smp = colTab.sp;
 		mpp = new MoviePreviewPane(mmp);
 		spp = new SeriesPreviewPane(smp);
-	}
-
-	public void search(){
-		final Stage stage = new Stage();
-		stage.initModality(Modality.WINDOW_MODAL);
-
-		BorderPane pane = new BorderPane();	
-		pane.setId("searchPane");
-
-		Scene scene = new Scene(pane,600,600);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 		final ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(false);
-		scrollPane.prefWidthProperty().bind(scene.widthProperty());
 		scrollPane.setId("scrollPane");
 		scrollPane.contentProperty().bind(new When(areMoviesSelected)
 		.then((TilePane) mpp)
@@ -97,7 +86,7 @@ public class SearchIHM {
 				else return placeholder;
 			}
 		};
-		pane.centerProperty().bind(b);
+		this.centerProperty().bind(b);
 
 		ToolBar toolbar = new ToolBar();
 		toolbar.setId("optionBar");
@@ -111,7 +100,7 @@ public class SearchIHM {
 
 		Button searchButton = new Button("Search");   
 		searchButton.setGraphic(new ImageView(new Image("file:images/search-2-32.png")));
-		searchButton.setPrefWidth(120);
+		searchButton.setContentDisplay(ContentDisplay.TOP);
 		searchButton.setMaxHeight(Integer.MAX_VALUE);
 		searchButton.setMaxWidth(Integer.MAX_VALUE);
 		searchButton.getStyleClass().add("circleButton");
@@ -136,7 +125,7 @@ public class SearchIHM {
 					});
 					new Thread(ml).start();
 				}
-				
+
 				List<Map<String, Object>> results1 = searcher.searchTVSeries(criteria.replace(" ","+"));
 				for(Map<String, Object> entry: results1){				
 					final SeriesLoader sl = new SeriesLoader(entry);		
@@ -147,25 +136,12 @@ public class SearchIHM {
 					});
 					new Thread(sl).start();
 				}
-				
+
 			}
 		};
 
 		searchField.setOnAction(searchEvent);
 		searchButton.setOnAction(searchEvent);
-
-		Button closeButton = new Button("Close");
-		closeButton.setGraphic(new ImageView(new Image("file:images/close-window-32.png")));
-		closeButton.setPrefWidth(100);
-		closeButton.setMaxHeight(Integer.MAX_VALUE);
-		closeButton.setMaxWidth(Integer.MAX_VALUE);
-		closeButton.getStyleClass().add("circleButton");
-		closeButton.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				stage.close();
-			}
-		});	
 
 		VBox modeBox = new VBox(2);
 		ToggleButton tb1 = new ToggleButton("Movies");
@@ -178,11 +154,19 @@ public class SearchIHM {
 		tb1.setToggleGroup(group);
 		tb2.setToggleGroup(group);
 		group.selectToggle(tb1);
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov,
+					Toggle toggle, Toggle new_toggle) {
+				if (new_toggle == null) {
+					toggle.setSelected(true);                                    
+				}
+			}
+		});
 		areMoviesSelected.bind(group.selectedToggleProperty().isEqualTo(tb1));
 
 		modeBox.getChildren().addAll(tb1,tb2);
 		modeBox.setAlignment(Pos.CENTER);
-		
+
 		HBox sortBox = new HBox(4);
 		VBox criteriaBox = new VBox(2);
 		Label sortLabel = new Label("Sort by:");
@@ -192,7 +176,7 @@ public class SearchIHM {
 		cb.getSelectionModel().select(0);
 		criteriaBox.setAlignment(Pos.CENTER_LEFT);
 		criteriaBox.getChildren().addAll(sortLabel,cb);
-		
+
 		Button sortAscendingButton = new Button();
 		sortAscendingButton.setGraphic(new ImageView(new Image("file:images/generic-sorting-2-32.png")));
 		sortAscendingButton.getStyleClass().add("sortButton");
@@ -217,23 +201,13 @@ public class SearchIHM {
 		sortBox.setAlignment(Pos.CENTER_LEFT);
 		sortBox.setTranslateX(5);
 
-		//sbox.setAlignment(Pos.CENTER_LEFT);
-		//sbox.setSpacing(5);
-
-		toolbar.getItems().addAll(sortBox,new Separator(Orientation.VERTICAL),modeBox,searchField, searchButton, closeButton);	
-		
-		pane.setTop(toolbar);
-
-		stage.setScene(scene);
-		stage.setTitle("Search");
-		stage.setMinHeight(350);
-		stage.setMinWidth(550);
-		stage.show();
+		toolbar.getItems().addAll(sortBox,new Separator(Orientation.VERTICAL),modeBox,searchField, searchButton);			
+		this.setTop(toolbar);
 
 		searchField.requestFocus();
 
 	}
-	
+
 	private void sort(int criteriaIndex, boolean isAscending){
 		TilePane toSort = areMoviesSelected.getValue() ? mpp : spp;
 		ArrayList<Node> sortedList = new ArrayList<Node>(toSort.getChildren());
