@@ -313,6 +313,7 @@ public class CollectionTab extends BorderPane{
 			StringBuilder builder = new StringBuilder();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 
+			//Saving movies
 			builder.append("MOVIES\n");
 			for(Movie m: mp.getMovies()){
 				builder.append("#\n");
@@ -327,6 +328,7 @@ public class CollectionTab extends BorderPane{
 				builder.append("\n");
 			}
 
+			//Saving series
 			builder.append("SERIES\n");
 			for(Series s: sp.getSeries()){
 				builder.append("#\n");
