@@ -19,6 +19,7 @@ public class Movie extends Element {
 	public List<String> productionCompanies, productionCountries;
 	public List<String> languages;
 	public int budget, revenue;
+	public String trailerURL;
 	public String plot;
 
 	public Movie(int id) {
@@ -63,6 +64,16 @@ public class Movie extends Element {
 		return "";
 	}
 
+	static String getTrailerURL(List<Map<String,String>> videos) {
+		for(Map<String,String> video : videos) { 
+			if("YouTube".equalsIgnoreCase(video.get("site"))) { 
+				// Enter parameters here, such as "?autoplay=1" 
+				return "http://www.youtube.com/embed/" + video.get("key") +"?theme=light&autohide=1&rel=0";
+			}
+		}
+		return "";	
+	}
+
 	private void initFields(int id){
 		Map<String,Object> details = Searcher.getMovie(id);
 
@@ -77,6 +88,7 @@ public class Movie extends Element {
 		this.credits = Searcher.getMovieCredits(id);
 		this.languages = mapToList((ArrayList<Map<String,String>>) details.get("spoken_languages") );
 		this.homepage = (String) details.get("homepage");
+		this.trailerURL = getTrailerURL( Searcher.getMovieTrailers(id) );
 
 		this.budget = (int) details.get("budget");
 		this.revenue = (int) details.get("revenue");

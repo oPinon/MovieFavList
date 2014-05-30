@@ -66,14 +66,13 @@ public class Searcher {
 		}
 		return null;
 	}
-	
-	
+
 	public static Map<String, Object> getSeries(int ID) {
 		try {
 			String url = BASE_API + TV + ID + "?api_key=" + KEY;
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> rawMap = mapper.readValue(new URL(url), Map.class);
-			
+
 			return rawMap;
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -86,7 +85,7 @@ public class Searcher {
 		}
 		return null;
 	}
-	
+
 	public static Map<String, Object> getMovieCredits(int ID) {
 		try {
 			String url = BASE_API + MOVIE + ID + CREDITS + "?api_key=" + KEY;
@@ -103,7 +102,28 @@ public class Searcher {
 		}
 		return null;
 	}
-	
+
+	public static Map<String, Object> getSeriesCredits(int ID) {
+		try {
+			String url = BASE_API + TV + ID + CREDITS + "?api_key=" + KEY;
+			ObjectMapper mapper = new ObjectMapper();
+			/*for(String key: rawMap.keySet()) {
+			System.out.println(key + " : "+ rawMap.get(key));
+		}*/
+			return mapper.readValue(new URL(url), Map.class);
+
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static List<Map<String,String>> getMovieTrailers(int ID) {
 		try {
 			String url = BASE_API + MOVIE + ID + VIDEOS + "?api_key=" + KEY;
@@ -123,28 +143,7 @@ public class Searcher {
 		}
 		return null;
 	}
-	
-	public static Map<String, Object> getSeriesCredits(int ID) {
-		try {
-			String url = BASE_API + TV + ID + CREDITS + "?api_key=" + KEY;
-			ObjectMapper mapper = new ObjectMapper();
-			/*for(String key: rawMap.keySet()) {
-			System.out.println(key + " : "+ rawMap.get(key));
-		}*/
-			return mapper.readValue(new URL(url), Map.class);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
+
 	public static String getImageURL(String image, boolean isLowRes) {
 		if(!isLowRes) return IMAGE_API + "original"+image;
 		else return IMAGE_API + "w154"+image;

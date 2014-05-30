@@ -138,7 +138,7 @@ public class CollectionTab extends BorderPane{
 			@Override
 			public void handle(ActionEvent event) {  
 				if(fileName.getValue() == null) saveAs();
-				else save(fileName.getValue());
+				else save("lists/"+fileName.getValue());
 			}
 		});
 

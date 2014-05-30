@@ -3,6 +3,8 @@ package application;
 import java.util.List;
 import java.util.Map;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
@@ -16,8 +18,10 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import element.Element;
 import element.Movie;
 import element.Series;
@@ -31,15 +35,12 @@ public class Details<T extends Element> {
 		Accordion details = new Accordion();
 		Scene scene = new Scene(details, 400,600);		
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		TitledPane infoPane = null, posterPane = null, crewPane = null, castPane = null, 
-				plotPane = null, commentPane = null;
 
 		if(element instanceof Movie){
 			final Movie movie = (Movie) element;
 
 			stage.setTitle(movie.title);
-			
+
 			// Basic info about the movie
 			VBox info = new VBox();
 
@@ -115,7 +116,7 @@ public class Details<T extends Element> {
 			if(movie.poster.getHeight()==0) imgView.setImage(new Image("file:images/placeholder.jpg"));
 			else imgView.setImage(movie.poster);
 			imgView.setPreserveRatio(true);
-			imgView.fitWidthProperty().bind(scene.widthProperty().divide(1.5));
+			imgView.fitHeightProperty().bind(scene.heightProperty().divide(1.5));
 
 			// the movie Plot
 			Text plot = new Text(movie.plot);
@@ -127,12 +128,26 @@ public class Details<T extends Element> {
 			comments.textProperty().bindBidirectional(movie.comments);
 			comments.setEditable(true);
 
-			infoPane = new TitledPane("Info",info);
-			posterPane = new TitledPane("Poster", imgView);
-			crewPane = new TitledPane("Creators", crewScrollPane);
-			castPane = new TitledPane("Actors", castScrollPane);
-			plotPane = new TitledPane("Plot", plot);
-			commentPane = new TitledPane("Comments", comments);
+			// a web view of the trailer
+			final WebView trailer = new WebView();
+			trailer.getEngine().load(movie.trailerURL);
+			trailer.prefWidthProperty().bind(stage.widthProperty());
+
+			TitledPane infoPane = new TitledPane("Info",info);
+			TitledPane posterPane = new TitledPane("Poster", imgView);
+			TitledPane trailerPane = new TitledPane("Trailer", trailer);
+			TitledPane crewPane = new TitledPane("Creators", crewScrollPane);
+			TitledPane castPane = new TitledPane("Actors", castScrollPane);
+			TitledPane plotPane = new TitledPane("Plot", plot);
+			TitledPane commentPane = new TitledPane("Comments", comments);
+
+			details.getPanes().addAll(infoPane, posterPane, crewPane, trailerPane, castPane, plotPane, commentPane);
+
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				public void handle(WindowEvent event) {
+					trailer.getEngine().load(null);
+				}
+			});
 
 		}
 
@@ -230,17 +245,18 @@ public class Details<T extends Element> {
 			comments.textProperty().bindBidirectional(series.comments);
 			comments.setEditable(true);
 
-			infoPane = new TitledPane("Info", info);
-			posterPane = new TitledPane("Poster", imgView);
-			crewPane = new TitledPane("Creators", crewScrollPane);
-			castPane = new TitledPane("Actors", castScrollPane);
-			plotPane = new TitledPane("Overview", overview);
-			commentPane = new TitledPane("Comments", comments);
-		}
-		details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
+			TitledPane infoPane = new TitledPane("Info", info);
+			TitledPane posterPane = new TitledPane("Poster", imgView);
+			TitledPane crewPane = new TitledPane("Creators", crewScrollPane);
+			TitledPane castPane = new TitledPane("Actors", castScrollPane);
+			TitledPane plotPane = new TitledPane("Overview", overview);
+			TitledPane commentPane = new TitledPane("Comments", comments);
 
+			details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
+		}
 		stage.setScene(scene);
-		stage.setResizable(false);
+	//	stage.setMinHeight(400);
+	//	stage.setMinWidth(600);
 		stage.show();
 
 	}
