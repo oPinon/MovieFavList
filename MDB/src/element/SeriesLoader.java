@@ -10,7 +10,10 @@ public class SeriesLoader extends Task<Series>{
 	String comments;
 	Map<String, Object> entry;
 	
-
+	public SeriesLoader(int id) {
+		this.id = id;
+		
+	}
 	public SeriesLoader(int id, int rating, String comments) {
 		this.id = id;
 		this.rating = rating;
@@ -22,6 +25,7 @@ public class SeriesLoader extends Task<Series>{
 	}
 
 	protected Series call() throws Exception {
+		if(comments == null && entry == null) return new Series(id);
 		if(entry == null) return new Series(id, rating, comments);
 		else return new Series(entry);
 	}

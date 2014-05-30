@@ -34,6 +34,7 @@ public class MainPane<T extends Element> extends TilePane implements Pane<T>{
 		for(Node mt: favs){
 			if(mt instanceof MainTile){
 				if(((MainTile<T>) mt).element.id==element.id){
+					Main.print("Element " + element.id + " is already in your collection");
 					return;
 				}	
 			}		
@@ -44,6 +45,8 @@ public class MainPane<T extends Element> extends TilePane implements Pane<T>{
 		ft.setFromValue(0);
 		ft.setToValue(1);
 		ft.play();
+		
+		Main.print("Element " + element.id + " successfully added");
 
 		TilePane.setAlignment(mmt, Pos.TOP_LEFT);
 	}

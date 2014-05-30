@@ -10,7 +10,10 @@ public class MovieLoader extends Task<Movie>{
 	String comments;
 	Map<String, Object> entry;
 	
-
+	public MovieLoader(int id) {
+		this.id = id;
+		
+	}
 	public MovieLoader(int id, int rating, String comments) {
 		this.id = id;
 		this.rating = rating;
@@ -22,6 +25,7 @@ public class MovieLoader extends Task<Movie>{
 	}
 
 	protected Movie call() throws Exception {
+		if(comments == null && entry == null) return new Movie(id);
 		if(entry == null) return new Movie(id, rating, comments);
 		else return new Movie(entry);
 	}

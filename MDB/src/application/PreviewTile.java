@@ -1,6 +1,7 @@
 package application;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -17,7 +18,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import element.Element;
 import element.Movie;
+import element.MovieLoader;
 import element.Series;
+import element.SeriesLoader;
 
 public class PreviewTile<T extends Element> extends Group implements Tile<T>{
 	public T element;
@@ -69,9 +72,14 @@ public class PreviewTile<T extends Element> extends Group implements Tile<T>{
 			addButton.setAlignment(Pos.BOTTOM_RIGHT);
 			VBox.setVgrow(addButton, Priority.ALWAYS);
 			addButton.setOnAction(new EventHandler<ActionEvent>(){
-				@Override
 				public void handle(ActionEvent event) {
-					mainPane.add( (T) new Movie(movie.id));
+					final MovieLoader ml = new MovieLoader(element.id);		
+					ml.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+						public void handle(WorkerStateEvent t) {
+							mainPane.add((T) ml.getValue());
+						}
+					});
+					new Thread(ml).start();
 				}
 			});
 
@@ -126,9 +134,14 @@ public class PreviewTile<T extends Element> extends Group implements Tile<T>{
 			addButton.setAlignment(Pos.BOTTOM_RIGHT);
 			VBox.setVgrow(addButton, Priority.ALWAYS);
 			addButton.setOnAction(new EventHandler<ActionEvent>(){
-				@Override
 				public void handle(ActionEvent event) {
-					mainPane.add((T) new Series(series.id));
+					final SeriesLoader sl = new SeriesLoader(element.id);		
+					sl.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+						public void handle(WorkerStateEvent t) {
+							mainPane.add((T) sl.getValue());
+						}
+					});
+					new Thread(sl).start();
 				}
 			});
 

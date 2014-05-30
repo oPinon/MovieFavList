@@ -255,8 +255,8 @@ public class Details<T extends Element> {
 			details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
 		}
 		stage.setScene(scene);
-	//	stage.setMinHeight(400);
-	//	stage.setMinWidth(600);
+		stage.setMinHeight(600);
+		stage.setMinWidth(300);
 		stage.show();
 
 	}
