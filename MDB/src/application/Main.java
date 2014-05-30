@@ -19,6 +19,7 @@ public class Main extends Application{
 
 		final Scene scene = new Scene(tabPane,600,600);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		tabPane.tabMinWidthProperty().bind(scene.widthProperty().divide(3));
 
 		CollectionTab colTab = new CollectionTab(stage);
 		SearchTab searchTab = new SearchTab(colTab);

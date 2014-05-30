@@ -18,6 +18,7 @@ public class Searcher {
 	private static final String MOVIE = "movie/";
 	private static final String TV = "tv/";
 	private static final String CREDITS = "/credits";
+	private static final String VIDEOS = "/videos";
 	private static final String IMAGE_API = "http://image.tmdb.org/t/p/";
 
 	public List<Map<String, Object>> searchMovies( String query ) {
@@ -66,6 +67,7 @@ public class Searcher {
 		return null;
 	}
 	
+	
 	public static Map<String, Object> getSeries(int ID) {
 		try {
 			String url = BASE_API + TV + ID + "?api_key=" + KEY;
@@ -90,6 +92,26 @@ public class Searcher {
 			String url = BASE_API + MOVIE + ID + CREDITS + "?api_key=" + KEY;
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.readValue(new URL(url), Map.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static List<Map<String,String>> getMovieTrailers(int ID) {
+		try {
+			String url = BASE_API + MOVIE + ID + VIDEOS + "?api_key=" + KEY;
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String,List<Map<String,String>>> rawMap = mapper.readValue(new URL(url), Map.class);
+			if(rawMap!=null) {
+				return rawMap.get("results");
+			}
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
