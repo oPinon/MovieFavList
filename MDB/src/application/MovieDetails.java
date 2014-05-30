@@ -17,6 +17,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -109,14 +111,20 @@ public class MovieDetails {
 		comments.textProperty().bindBidirectional(movie.comments);
 		comments.setEditable(true);
 
+		// a web view of the trailer
+		WebView trailer = new WebView();
+		trailer.getEngine().load(movie.trailerURL);
+		trailer.prefWidthProperty().bind(stage.widthProperty());
+		
 		TitledPane infoPane = new TitledPane("Info",info);
 		TitledPane posterPane = new TitledPane("Poster", imgView);
+		TitledPane trailerPane = new TitledPane("Trailer", trailer);
 		TitledPane crewPane = new TitledPane("Creators", crewScrollPane);
 		TitledPane castPane = new TitledPane("Actors", castScrollPane);
 		TitledPane plotPane = new TitledPane("Plot", plot);
 		TitledPane commentPane = new TitledPane("Comments", comments);
 
-		details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
+		details.getPanes().addAll(infoPane, posterPane, crewPane, trailerPane, castPane, plotPane, commentPane);
 
 		stage.setScene(scene);
 		stage.setResizable(false);
