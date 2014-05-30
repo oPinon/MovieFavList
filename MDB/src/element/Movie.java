@@ -1,18 +1,18 @@
 package element;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
-import utils.Searcher;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
+import utils.Searcher;
 
-public class Movie {
-	public int id;	
+public class Movie extends Element {
+
 	public String title, originalTitle, tagline;
 	public String releaseDate;
 	public List<String> genres;

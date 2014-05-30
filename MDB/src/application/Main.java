@@ -3,7 +3,6 @@ package application;
 import javafx.application.Application;
 import javafx.beans.binding.When;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

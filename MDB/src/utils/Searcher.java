@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import javafx.scene.image.Image;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
