@@ -12,16 +12,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
-import element.Series;
+import element.Element;
 
-public class SeriesPreviewPane extends TilePane implements SeriesPane {
+public class PreviewPane<T extends Element> extends TilePane implements Pane<T>{
 
 	ObservableList<Node> favs = FXCollections.observableArrayList();
-	SeriesMainPane smp;
+	MainPane<T> mmp;
 	ReadOnlyBooleanProperty emptyProperty;
 
-	public SeriesPreviewPane(SeriesMainPane smp) {
-		this.smp = smp;
+	public PreviewPane(MainPane<T> mmp) {
+		this.mmp = mmp;
 
 		setVgap(0);
 		setHgap(10);
@@ -30,8 +30,8 @@ public class SeriesPreviewPane extends TilePane implements SeriesPane {
 		emptyProperty = new SimpleListProperty<Node>(favs).emptyProperty();
 	}
 
-	public void add(Series series){
-		SeriesPreviewTile mt = new SeriesPreviewTile(series,smp);
+	public void add(T m){
+		PreviewTile<T> mt = new PreviewTile<T>(m,mmp);
 		favs.add(mt);
 		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
 		ft.setFromValue(0);
@@ -41,10 +41,10 @@ public class SeriesPreviewPane extends TilePane implements SeriesPane {
 		TilePane.setAlignment(mt, Pos.TOP_LEFT);
 	}
 
-	public void remove(Series series) {
+	public void remove(T element) {
 		for(final Node mt: favs){
-			if(mt instanceof SeriesMainTile){
-				if(((SeriesMainTile) mt).series.id==series.id){
+			if(mt instanceof MainTile){
+				if(((MainTile<T>) mt).element.id==element.id){
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);
@@ -65,11 +65,11 @@ public class SeriesPreviewPane extends TilePane implements SeriesPane {
 
 	}
 
-	public ObservableList<Series> getSeries() {
-		ObservableList<Series> toReturn = FXCollections.observableArrayList();;
+	public ObservableList<T> getElements() {
+		ObservableList<T> toReturn = FXCollections.observableArrayList();;
 		for(Node mt: favs){
-			if(mt instanceof SeriesMainTile){			
-				toReturn.add( ((SeriesMainTile) mt).series );
+			if(mt instanceof MainTile){			
+				toReturn.add( ((MainTile<T>) mt).element );
 			}	
 		}			
 		return toReturn;

@@ -9,15 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import element.Movie;
-import element.MovieLoader;
-import element.Series;
-import element.SeriesLoader;
-import utils.DirectorComparator;
-import utils.InternetRatingComparator;
-import utils.RatingComparator;
-import utils.ReleaseComparator;
-import utils.TitleComparator;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
@@ -33,12 +24,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -54,12 +45,21 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import utils.DirectorComparator;
+import utils.InternetRatingComparator;
+import utils.RatingComparator;
+import utils.ReleaseComparator;
+import utils.TitleComparator;
+import element.Movie;
+import element.MovieLoader;
+import element.Series;
+import element.SeriesLoader;
 
 public class CollectionTab extends BorderPane{
 	Stage stage;
 
-	MovieMainPane mp;
-	SeriesMainPane sp;
+	MainPane<Movie> mp;
+	MainPane<Series> sp;
 	StringProperty fileName = new SimpleStringProperty();
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
@@ -75,8 +75,8 @@ public class CollectionTab extends BorderPane{
 		scrollPane.setFitToHeight(false);
 		scrollPane.setId("scrollPane");
 
-		mp = new MovieMainPane();
-		sp = new SeriesMainPane();
+		mp = new MainPane<Movie>();
+		sp = new MainPane<Series>();
 		scrollPane.contentProperty().bind(new When(areMoviesSelected)
 		.then((TilePane) mp)
 		.otherwise((TilePane) sp)
@@ -315,7 +315,7 @@ public class CollectionTab extends BorderPane{
 
 			//Saving movies
 			builder.append("MOVIES\n");
-			for(Movie m: mp.getMovies()){
+			for(Movie m: mp.getElements()){
 				builder.append("#\n");
 				builder.append(m.id);
 				builder.append("\n");
@@ -330,7 +330,7 @@ public class CollectionTab extends BorderPane{
 
 			//Saving series
 			builder.append("SERIES\n");
-			for(Series s: sp.getSeries()){
+			for(Series s: sp.getElements()){
 				builder.append("#\n");
 				builder.append(s.id);
 				builder.append("\n");

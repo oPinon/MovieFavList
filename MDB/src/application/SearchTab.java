@@ -5,12 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import element.MovieLoader;
-import element.SeriesLoader;
-import utils.DirectorComparator;
-import utils.ReleaseComparator;
-import utils.Searcher;
-import utils.TitleComparator;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
@@ -29,14 +23,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -44,12 +38,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import utils.DirectorComparator;
+import utils.ReleaseComparator;
+import utils.Searcher;
+import utils.TitleComparator;
+import element.Movie;
+import element.MovieLoader;
+import element.Series;
+import element.SeriesLoader;
 
 public class SearchTab extends BorderPane{
-	private MovieMainPane mmp;
-	private SeriesMainPane smp;
-	private MoviePreviewPane mpp;
-	private SeriesPreviewPane spp;
+	private MainPane<Movie> mmp;
+	private MainPane<Series> smp;
+	private PreviewPane<Movie> mpp;
+	private PreviewPane<Series> spp;
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
 	public SearchTab(CollectionTab colTab) {
@@ -58,8 +60,8 @@ public class SearchTab extends BorderPane{
 
 		this.mmp = colTab.mp;
 		this.smp = colTab.sp;
-		mpp = new MoviePreviewPane(mmp);
-		spp = new SeriesPreviewPane(smp);
+		mpp = new PreviewPane<Movie>(mmp);
+		spp = new PreviewPane<Series>(smp);
 
 		final ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);

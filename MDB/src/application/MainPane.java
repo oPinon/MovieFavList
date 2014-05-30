@@ -1,6 +1,5 @@
 package application;
 
-import element.Movie;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -13,13 +12,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
+import element.Element;
 
-public class MovieMainPane extends TilePane implements MoviePane {
+public class MainPane<T extends Element> extends TilePane implements Pane<T>{
 
 	private ObservableList<Node> favs = FXCollections.observableArrayList();
 	ReadOnlyBooleanProperty emptyProperty;
 
-	public MovieMainPane() {
+	public MainPane() {
 		//	setPrefColumns(2);
 
 		setVgap(0);
@@ -30,15 +30,15 @@ public class MovieMainPane extends TilePane implements MoviePane {
 
 	}
 
-	public void add(Movie movie){
+	public void add(T element){
 		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
+			if(mt instanceof MainTile){
+				if(((MainTile<T>) mt).element.id==element.id){
 					return;
 				}	
 			}		
-		}	
-		MovieMainTile mmt = new MovieMainTile(movie,this);
+		}
+		MainTile<T> mmt = new MainTile<T>(element,this);
 		synchronized(this) {favs.add(mmt);}
 		FadeTransition ft = new FadeTransition(Duration.millis(1000), mmt);
 		ft.setFromValue(0);
@@ -48,19 +48,19 @@ public class MovieMainPane extends TilePane implements MoviePane {
 		TilePane.setAlignment(mmt, Pos.TOP_LEFT);
 	}
 
-	public void remove(Movie movie) {
+	public void remove(T element) {
 		for(final Node mt: favs){
-			if(mt instanceof MovieMainTile){
-				if(((MovieMainTile) mt).movie.id==movie.id){
+			if(mt instanceof MainTile){
+				if(((MainTile<T>) mt).element.id==element.id){
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);
 					ft.play();
 					ft.setOnFinished(new EventHandler<ActionEvent>(){
-			            public void handle(ActionEvent arg0) {
-			                	favs.remove(mt);
-			            }
-			        });
+						public void handle(ActionEvent arg0) {
+							favs.remove(mt);
+						}
+					});
 					return;
 				}	
 			}		
@@ -71,16 +71,14 @@ public class MovieMainPane extends TilePane implements MoviePane {
 		favs.clear();
 	}
 
-	public ObservableList<Movie> getMovies() {
-		ObservableList<Movie> toReturn = FXCollections.observableArrayList();;
+	public ObservableList<T> getElements() {
+		ObservableList<T> toReturn = FXCollections.observableArrayList();;
 		for(Node mt: favs){
-			if(mt instanceof MovieMainTile){			
-				toReturn.add( ((MovieMainTile) mt).movie );
+			if(mt instanceof MainTile){			
+				toReturn.add( ((MainTile<T>) mt).element );
 			}	
 		}			
 		return toReturn;
 	}
-
-
 
 }
