@@ -15,20 +15,12 @@ public class Series extends Element {
 
 	public String name, originalName;
 	public String firstAirDate, lastAirDate;
-	public List<String> genres;
 	public int episodes, seasons;
 	public List<Integer> episodeRunTime;
 	public List<String> creators, originCountry;
 	public List<String> networks, languages;
-	public String homepage;
-
-	public Map<String, Object> credits;
 	public String overview;
-	public double internetRating;
-	public Image poster;
-	
-	public IntegerProperty rating;
-	public StringProperty comments;
+
 	
 	public Series(int id) {
 		this.id = id;

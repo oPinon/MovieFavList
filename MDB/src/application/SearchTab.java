@@ -58,6 +58,8 @@ public class SearchTab extends BorderPane{
 		super();
 		this.setId("searchPane");
 
+		areMoviesSelected.bind(colTab.areMoviesSelected);
+
 		this.mmp = colTab.mp;
 		this.smp = colTab.sp;
 		mpp = new PreviewPane<Movie>(mmp);
@@ -96,7 +98,10 @@ public class SearchTab extends BorderPane{
 		final TextField searchField = new TextField();
 		searchField.getStyleClass().add("searchBox");
 		searchField.setMaxWidth(Integer.MAX_VALUE);
-		searchField.setPromptText("Search by name");
+		searchField.promptTextProperty().bind( new When(areMoviesSelected)
+		.then("Search movies by title")
+		.otherwise("Search series by name")
+				);
 		searchField.setTranslateX(5);
 		HBox.setHgrow(searchField, Priority.ALWAYS);
 
@@ -141,33 +146,8 @@ public class SearchTab extends BorderPane{
 
 			}
 		};
-
 		searchField.setOnAction(searchEvent);
 		searchButton.setOnAction(searchEvent);
-
-		VBox modeBox = new VBox(2);
-		ToggleButton tb1 = new ToggleButton("Movies");
-		tb1.setMaxWidth(Integer.MAX_VALUE);
-		tb1.prefWidthProperty().bind(modeBox.prefWidthProperty());
-		ToggleButton tb2 = new ToggleButton("TV Series");
-		tb2.setMaxWidth(Integer.MAX_VALUE);
-		tb2.prefWidthProperty().bind(modeBox.prefWidthProperty());
-		ToggleGroup group = new ToggleGroup();
-		tb1.setToggleGroup(group);
-		tb2.setToggleGroup(group);
-		group.selectToggle(tb1);
-		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			public void changed(ObservableValue<? extends Toggle> ov,
-					Toggle toggle, Toggle new_toggle) {
-				if (new_toggle == null) {
-					toggle.setSelected(true);                                    
-				}
-			}
-		});
-		areMoviesSelected.bind(group.selectedToggleProperty().isEqualTo(tb1));
-
-		modeBox.getChildren().addAll(tb1,tb2);
-		modeBox.setAlignment(Pos.CENTER);
 
 		HBox sortBox = new HBox(4);
 		VBox criteriaBox = new VBox(2);
@@ -203,7 +183,7 @@ public class SearchTab extends BorderPane{
 		sortBox.setAlignment(Pos.CENTER_LEFT);
 		sortBox.setTranslateX(5);
 
-		toolbar.getItems().addAll(sortBox,new Separator(Orientation.VERTICAL),modeBox,searchField, searchButton);			
+		toolbar.getItems().addAll(sortBox,new Separator(Orientation.VERTICAL),searchField, searchButton);			
 		this.setTop(toolbar);
 
 		searchField.requestFocus();

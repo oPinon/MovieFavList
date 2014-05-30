@@ -25,19 +25,25 @@ import element.Series;
 public class Details<T extends Element> {
 
 	public Details(T element) {
-		Stage stage = new Stage();
+		Stage stage = new Stage();	
+		stage.initModality(Modality.APPLICATION_MODAL);
+
+		Accordion details = new Accordion();
+		Scene scene = new Scene(details, 400,600);		
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		TitledPane infoPane = null, posterPane = null, crewPane = null, castPane = null, 
+				plotPane = null, commentPane = null;
 
 		if(element instanceof Movie){
 			final Movie movie = (Movie) element;
 
 			stage.setTitle(movie.title);
-			stage.initModality(Modality.APPLICATION_MODAL);
-
-			Accordion details = new Accordion();
-			Scene scene = new Scene(details, 400,600);
-
+			
 			// Basic info about the movie
 			VBox info = new VBox();
+
+			info.getStyleClass().add("tp");
 			info.setAlignment(Pos.CENTER_LEFT);
 			info.setTranslateX(3);
 			Text id = new Text("ID : " + movie.id);
@@ -63,14 +69,14 @@ public class Details<T extends Element> {
 			for(String s : movie.genres) { genre.getChildren().add(new Button(s)); }
 			Text rating = new Text("\nPersonal rating : " + movie.rating.getValue());
 			Text internetRating = new Text("Internet rating : "+ movie.internetRating);
-			
+
 			title.wrappingWidthProperty().bind(scene.widthProperty());
 			originalTitle.wrappingWidthProperty().bind(scene.widthProperty());
 			tagline.wrappingWidthProperty().bind(scene.widthProperty());
 			prodCompanies.wrappingWidthProperty().bind(scene.widthProperty());
 			prodCountries.wrappingWidthProperty().bind(scene.widthProperty());
 			homepage.wrappingWidthProperty().bind(scene.widthProperty());
-			
+
 			info.getChildren().addAll(id,title,originalTitle,tagline,release,genre,director,prodCompanies,
 					prodCountries,languages,homepage,budget,revenue,rating,internetRating);
 
@@ -121,25 +127,19 @@ public class Details<T extends Element> {
 			comments.textProperty().bindBidirectional(movie.comments);
 			comments.setEditable(true);
 
-			TitledPane infoPane = new TitledPane("Info",info);
-			TitledPane posterPane = new TitledPane("Poster", imgView);
-			TitledPane crewPane = new TitledPane("Creators", crewScrollPane);
-			TitledPane castPane = new TitledPane("Actors", castScrollPane);
-			TitledPane plotPane = new TitledPane("Plot", plot);
-			TitledPane commentPane = new TitledPane("Comments", comments);
+			infoPane = new TitledPane("Info",info);
+			posterPane = new TitledPane("Poster", imgView);
+			crewPane = new TitledPane("Creators", crewScrollPane);
+			castPane = new TitledPane("Actors", castScrollPane);
+			plotPane = new TitledPane("Plot", plot);
+			commentPane = new TitledPane("Comments", comments);
 
-			details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
-			stage.setScene(scene);
 		}
 
 		if(element instanceof Series){
 			final Series series = (Series) element;
 
 			stage.setTitle(series.name);
-			stage.initModality(Modality.APPLICATION_MODAL);
-
-			Accordion details = new Accordion();
-			Scene scene = new Scene(details, 400,600);
 
 			// Basic info about the series
 			VBox info = new VBox();
@@ -172,7 +172,7 @@ public class Details<T extends Element> {
 			for(String s : series.genres) { genre.getChildren().add(new Button(s)); }	
 			Text rating = new Text("\nPersonal rating : " + series.rating.getValue());
 			Text internetRating = new Text("Internet rating : "+ series.internetRating);
-			
+
 			name.wrappingWidthProperty().bind(scene.widthProperty());
 			originalName.wrappingWidthProperty().bind(scene.widthProperty());
 			creators.wrappingWidthProperty().bind(scene.widthProperty());
@@ -180,7 +180,7 @@ public class Details<T extends Element> {
 			network.wrappingWidthProperty().bind(scene.widthProperty());
 			languages.wrappingWidthProperty().bind(scene.widthProperty());
 			homepage.wrappingWidthProperty().bind(scene.widthProperty());
-			
+
 			info.getChildren().addAll(id,name,originalName,firstAir,lastAir,genre,episodes,seasons,
 					runTime,creators,originCountry,network,languages,homepage,rating,internetRating);
 
@@ -230,17 +230,16 @@ public class Details<T extends Element> {
 			comments.textProperty().bindBidirectional(series.comments);
 			comments.setEditable(true);
 
-			TitledPane infoPane = new TitledPane("Info",info);
-			TitledPane posterPane = new TitledPane("Poster", imgView);
-			TitledPane crewPane = new TitledPane("Creators", crewScrollPane);
-			TitledPane castPane = new TitledPane("Actors", castScrollPane);
-			TitledPane plotPane = new TitledPane("Overview", overview);
-			TitledPane commentPane = new TitledPane("Comments", comments);
-
-			details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
-			stage.setScene(scene);
+			infoPane = new TitledPane("Info", info);
+			posterPane = new TitledPane("Poster", imgView);
+			crewPane = new TitledPane("Creators", crewScrollPane);
+			castPane = new TitledPane("Actors", castScrollPane);
+			plotPane = new TitledPane("Overview", overview);
+			commentPane = new TitledPane("Comments", comments);
 		}
+		details.getPanes().addAll(infoPane, posterPane, crewPane, castPane, plotPane, commentPane);
 
+		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
 

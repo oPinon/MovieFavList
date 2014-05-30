@@ -15,20 +15,11 @@ public class Movie extends Element {
 
 	public String title, originalTitle, tagline;
 	public String releaseDate;
-	public List<String> genres;
 	public String director;
 	public List<String> productionCompanies, productionCountries;
 	public List<String> languages;
-	public String homepage;
 	public int budget, revenue;
-
-	public Map<String, Object> credits;
 	public String plot;
-	public double internetRating;
-	public Image poster;
-
-	public IntegerProperty rating;
-	public StringProperty comments;
 
 	public Movie(int id) {
 		this.id = id;

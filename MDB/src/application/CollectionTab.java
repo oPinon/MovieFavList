@@ -137,18 +137,22 @@ public class CollectionTab extends BorderPane{
 		save.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {  
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Save list");
-				fileChooser.setInitialDirectory( new File("lists/") ); 
-				fileChooser.getExtensionFilters().add(
-						new FileChooser.ExtensionFilter("TXT", "*.txt")
-						);
+				if(fileName.getValue() == null) saveAs();
+				else save(fileName.getValue());
+			}
+		});
 
-				File file = fileChooser.showSaveDialog(stage);
-				if(file != null) {
-					save(file.getPath());
-					fileName.setValue(file.getPath().substring(file.getPath().lastIndexOf('\\')+1));
-				}
+		final Button saveAs = new Button("Save As");	
+		saveAs.setGraphic(new ImageView(new Image("file:images/save-as-32.png")));
+		saveAs.setContentDisplay(ContentDisplay.TOP);
+		saveAs.setMaxHeight(Integer.MAX_VALUE);
+		saveAs.setMaxWidth(Integer.MAX_VALUE);
+		saveAs.getStyleClass().add("circleButton");
+		saveAs.setTooltip(new Tooltip("Save the list"));
+		saveAs.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {  
+				saveAs();
 			}
 		});
 
@@ -213,36 +217,24 @@ public class CollectionTab extends BorderPane{
 		sortBox.setTranslateX(5);
 		HBox.setHgrow(sortBox, Priority.ALWAYS);
 
-		toolbar.getItems().addAll(sortBox,load,save);
+		toolbar.getItems().addAll(sortBox,load,save,saveAs);
 		this.setTop(toolbar);
+		
+		init();
 
 	}
 
-	private void sort(int criteriaIndex, boolean isAscending){
-		TilePane toSort = areMoviesSelected.getValue() ? mp : sp;
-		ArrayList<Node> sortedList = new ArrayList<Node>(toSort.getChildren());
-		switch(criteriaIndex){
-		case 0:			
-			Collections.sort(sortedList, new TitleComparator(areMoviesSelected.getValue(),isAscending));
-			break;
-		case 1:			
-			Collections.sort(sortedList, new DirectorComparator(areMoviesSelected.getValue(),isAscending));
-			break;
-		case 2:	
-			Collections.sort(sortedList, new ReleaseComparator(areMoviesSelected.getValue(),isAscending));
-			break;
-		case 3:	
-			Collections.sort(sortedList, new RatingComparator(areMoviesSelected.getValue(),isAscending));
-			break;
-		case 4:	
-			Collections.sort(sortedList, new InternetRatingComparator(areMoviesSelected.getValue(),isAscending));
-			break;
-
-		}	
-		toSort.getChildren().clear();
-		toSort.getChildren().addAll(sortedList);
-
-
+	private void init(){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("lists/config.ini"));
+			String line;
+			line = br.readLine();
+			br.close();
+			load(line);
+			fileName.setValue(line.substring(line.lastIndexOf('/')+1));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void load(String fileName){
@@ -350,4 +342,43 @@ public class CollectionTab extends BorderPane{
 		}
 	}
 
+	private void saveAs(){
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Save list");
+		fileChooser.setInitialDirectory( new File("lists/") ); 
+		fileChooser.getExtensionFilters().add(
+				new FileChooser.ExtensionFilter("TXT", "*.txt")
+				);
+
+		File file = fileChooser.showSaveDialog(stage);
+		if(file != null) {
+			save(file.getPath());
+			fileName.setValue(file.getPath().substring(file.getPath().lastIndexOf('\\')+1));
+		}
+	}
+
+	private void sort(int criteriaIndex, boolean isAscending){
+		TilePane toSort = areMoviesSelected.getValue() ? mp : sp;
+		ArrayList<Node> sortedList = new ArrayList<Node>(toSort.getChildren());
+		switch(criteriaIndex){
+		case 0:			
+			Collections.sort(sortedList, new TitleComparator(areMoviesSelected.getValue(),isAscending));
+			break;
+		case 1:			
+			Collections.sort(sortedList, new DirectorComparator(areMoviesSelected.getValue(),isAscending));
+			break;
+		case 2:	
+			Collections.sort(sortedList, new ReleaseComparator(areMoviesSelected.getValue(),isAscending));
+			break;
+		case 3:	
+			Collections.sort(sortedList, new RatingComparator(areMoviesSelected.getValue(),isAscending));
+			break;
+		case 4:	
+			Collections.sort(sortedList, new InternetRatingComparator(areMoviesSelected.getValue(),isAscending));
+			break;
+	
+		}	
+		toSort.getChildren().clear();
+		toSort.getChildren().addAll(sortedList);
+	}
 }
