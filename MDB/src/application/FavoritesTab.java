@@ -55,7 +55,7 @@ import element.MovieLoader;
 import element.Series;
 import element.SeriesLoader;
 
-public class CollectionTab extends BorderPane{
+public class FavoritesTab extends BorderPane{
 	Stage stage;
 
 	MainPane<Movie> mp;
@@ -63,7 +63,7 @@ public class CollectionTab extends BorderPane{
 	StringProperty fileName = new SimpleStringProperty();
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
-	public CollectionTab(final Stage stage) {
+	public FavoritesTab(final Stage stage) {
 		super();
 		this.setId("mainPane");
 
@@ -219,12 +219,10 @@ public class CollectionTab extends BorderPane{
 
 		toolbar.getItems().addAll(sortBox,load,save,saveAs);
 		this.setTop(toolbar);
-		
-		init();
 
 	}
 
-	private void init(){
+	public void init(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("lists/config.ini"));
 			String line;
@@ -292,8 +290,9 @@ public class CollectionTab extends BorderPane{
 				new Thread(sl).start();
 				line = br.readLine();
 			}
-
+		
 			br.close();
+			Main.print("File " + fileName + " loaded");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -337,6 +336,7 @@ public class CollectionTab extends BorderPane{
 
 			writer.write(builder.toString());
 			writer.close();
+			Main.print("File " + fileName + " saved");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

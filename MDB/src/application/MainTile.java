@@ -83,9 +83,7 @@ public class MainTile<T extends Element> extends Group implements Tile<T>{
 			HBox buttonBox = new HBox(2);
 			Button infoButton = new Button("Info");
 			infoButton.getStyleClass().add("movieButton");
-			//infoButton.setGraphic(new ImageView(new Image("file:images/info-16.png")));
 			infoButton.setAlignment(Pos.CENTER_RIGHT);
-			//VBox.setVgrow(delButton, Priority.ALWAYS);
 			infoButton.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {			
@@ -95,9 +93,7 @@ public class MainTile<T extends Element> extends Group implements Tile<T>{
 
 			Button delButton = new Button("Remove");
 			delButton.getStyleClass().add("movieButton");
-			//	delButton.setGraphic(new ImageView(new Image("file:images/x-mark-3-16.png")));
 			delButton.setAlignment(Pos.CENTER_RIGHT);
-			//VBox.setVgrow(delButton, Priority.ALWAYS);
 			delButton.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {			
@@ -217,9 +213,7 @@ public class MainTile<T extends Element> extends Group implements Tile<T>{
 			HBox buttonBox = new HBox(2);
 			Button infoButton = new Button("Info");
 			infoButton.getStyleClass().add("movieButton");
-			//infoButton.setGraphic(new ImageView(new Image("file:images/info-16.png")));
 			infoButton.setAlignment(Pos.CENTER_RIGHT);
-			//VBox.setVgrow(delButton, Priority.ALWAYS);
 			infoButton.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {			
@@ -229,9 +223,7 @@ public class MainTile<T extends Element> extends Group implements Tile<T>{
 
 			Button delButton = new Button("Remove");
 			delButton.getStyleClass().add("movieButton");
-			//	delButton.setGraphic(new ImageView(new Image("file:images/x-mark-3-16.png")));
 			delButton.setAlignment(Pos.CENTER_RIGHT);
-			//VBox.setVgrow(delButton, Priority.ALWAYS);
 			delButton.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {			

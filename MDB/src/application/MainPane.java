@@ -20,8 +20,6 @@ public class MainPane<T extends Element> extends TilePane implements Pane<T>{
 	ReadOnlyBooleanProperty emptyProperty;
 
 	public MainPane() {
-		//	setPrefColumns(2);
-
 		setVgap(0);
 		setHgap(10);
 
@@ -55,6 +53,7 @@ public class MainPane<T extends Element> extends TilePane implements Pane<T>{
 		for(final Node mt: favs){
 			if(mt instanceof MainTile){
 				if(((MainTile<T>) mt).element.id==element.id){
+					Main.print("Element " + element.id + " successfully removed");
 					FadeTransition ft = new FadeTransition(Duration.millis(500), mt);
 					ft.setFromValue(1);
 					ft.setToValue(0);

@@ -9,8 +9,6 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -26,9 +24,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -54,14 +49,14 @@ public class SearchTab extends BorderPane{
 	private PreviewPane<Series> spp;
 	BooleanProperty areMoviesSelected = new SimpleBooleanProperty();
 
-	public SearchTab(CollectionTab colTab) {
+	public SearchTab(FavoritesTab favTab) {
 		super();
 		this.setId("searchPane");
 
-		areMoviesSelected.bind(colTab.areMoviesSelected);
+		areMoviesSelected.bind(favTab.areMoviesSelected);
 
-		this.mmp = colTab.mp;
-		this.smp = colTab.sp;
+		this.mmp = favTab.mp;
+		this.smp = favTab.sp;
 		mpp = new PreviewPane<Movie>(mmp);
 		spp = new PreviewPane<Series>(smp);
 
@@ -100,7 +95,7 @@ public class SearchTab extends BorderPane{
 		searchField.setMaxWidth(Integer.MAX_VALUE);
 		searchField.promptTextProperty().bind( new When(areMoviesSelected)
 		.then("Search movies by title")
-		.otherwise("Search series by name")
+		.otherwise("Search series by title")
 				);
 		searchField.setTranslateX(5);
 		HBox.setHgrow(searchField, Priority.ALWAYS);

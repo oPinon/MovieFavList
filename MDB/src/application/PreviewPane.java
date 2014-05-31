@@ -30,8 +30,8 @@ public class PreviewPane<T extends Element> extends TilePane implements Pane<T>{
 		emptyProperty = new SimpleListProperty<Node>(favs).emptyProperty();
 	}
 
-	public void add(T m){
-		PreviewTile<T> mt = new PreviewTile<T>(m,mmp);
+	public void add(T element){
+		PreviewTile<T> mt = new PreviewTile<T>(element,mmp);
 		favs.add(mt);
 		FadeTransition ft = new FadeTransition(Duration.millis(1000), mt);
 		ft.setFromValue(0);

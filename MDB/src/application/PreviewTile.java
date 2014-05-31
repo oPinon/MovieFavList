@@ -32,7 +32,6 @@ public class PreviewTile<T extends Element> extends Group implements Tile<T>{
 		if(element instanceof Movie){
 			final Movie movie = (Movie) element;
 
-
 			final HBox hbox = new HBox(2);
 			hbox.setMinWidth(150);
 			hbox.setMaxWidth(300);

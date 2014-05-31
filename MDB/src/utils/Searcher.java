@@ -107,9 +107,7 @@ public class Searcher {
 		try {
 			String url = BASE_API + TV + ID + CREDITS + "?api_key=" + KEY;
 			ObjectMapper mapper = new ObjectMapper();
-			/*for(String key: rawMap.keySet()) {
-			System.out.println(key + " : "+ rawMap.get(key));
-		}*/
+			
 			return mapper.readValue(new URL(url), Map.class);
 
 		} catch (JsonParseException e) {
